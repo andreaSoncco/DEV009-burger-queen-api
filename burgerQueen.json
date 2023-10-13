@@ -1,0 +1,185 @@
+  {
+    "users": [
+      {
+        "id": 15254,
+        "email": "daleska828@gmail.com",
+        "role": "admin",
+        "password": "2772"
+      },
+      {
+        "id": 15253,
+        "email": "celso.soncco@gmail.com",
+        "role": "waiter",
+        "password": "3223"
+      },
+      {
+        "id": 15252,
+        "email": "zandra.cisneros@gmail.com",
+        "role": "chef",
+        "password": "5445"
+      }
+    ],
+    "products": [
+      {
+        "id": 1111,
+        "name": "sandwich de jamón y queso",
+        "price": 10,
+        "image": "https://img.freepik.com/fotos-premium/sandwich-jamon-queso_105495-190.jpg",
+        "type": "desayuno",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 1321,
+        "name": "jugo de frutas natural",
+        "price": 7,
+        "image": "https://media3.bosch-home.com/Images/600x/MCIM02716002_jugo-de-papaya-platano-y-naranja.jpg",
+        "type": "desayuno",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 1331,
+        "name": "café americano",
+        "price": 5,
+        "image": "https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg",
+        "type": "desayuno",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 1332,
+        "name": "café con leche",
+        "price": 7,
+        "image": "https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg",
+        "type": "desayuno",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2111,
+        "name": "hamburguesa simple",
+        "price": 10,
+        "image": "https://www.hogar.mapfre.es/media/2018/09/hamburguesa-sencilla.jpg",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2112,
+        "name": "hamburguesa doble",
+        "price": 15,
+        "image": "https://progcarne.com/storage/app/uploads/public/608/6d1/8b0/6086d18b065a7811052900.jpg",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2221,
+        "name": "papas fritas",
+        "price": 5,
+        "image": "https://i.blogs.es/899e53/650_1200/650_1200.jpg",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2231,
+        "name": "aros de cebolla",
+        "price": 5,
+        "image": "https://cloudfront-us-east-1.images.arcpublishing.com/elespectador/DT6XASKCERB5NFKRKTL7ASM3MM.jpg",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2341,
+        "name": "agua 500ml",
+        "price": 5,
+        "image": "https://wongfood.vtexassets.com/arquivos/ids/252192-800-auto?v=636754932463500000&width=800&height=auto&aspect=true",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2342,
+        "name": "agua 750ml",
+        "price": 7,
+        "image": "https://payji.com.pe/wp-content/uploads/2022/03/Socosani-Agua-Socosani-355-Ml-Con-Gas-Botella-De-Vidrio.png",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2351,
+        "name": "bebida/gaseosa 500ml",
+        "price": 7,
+        "image": "https://i.blogs.es/421374/cafe-con-leche2/1366_2000.jpg",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      },
+      {
+        "id": 2352,
+        "name": "bebida/gaseosa 750ml",
+        "price": 7,
+        "image": "https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg",
+        "type": "almuerzo y cena",
+        "dateEntry": "2022-03-05  15:14:10"
+      }
+    ],
+    "orders": [
+      {
+        "id": 2324,
+        "userId": 15254,
+        "client": "Jude Milton",
+        "products": [
+          {
+            "qty": 1,
+            "product": {
+              "id": 1111,
+              "name": "sandwich de jamón y queso",
+              "price": 10,
+              "image": "https://img.freepik.com/fotos-premium/sandwich-jamon-queso_105495-190.jpg",
+              "type": "desayuno",
+              "dateEntry": "2022-03-05  15:14:10"
+            }
+          },
+          {
+            "qty": 1,
+            "product": {
+              "id": 1331,
+              "name": "café americano",
+              "price": 5,
+              "image": "https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg",
+              "type": "desayuno",
+              "dateEntry": "2022-03-05  15:14:10"
+            }
+          }
+        ],
+        "status": "pending",
+        "dataEntry": "2022-03-05  15:30:00"
+      },
+      {
+        "id": 8796,
+        "userId": 15254,
+        "client": "Katie Bouman",
+        "products": [
+          {
+            "qty": 2,
+            "product": {
+              "id": 1331,
+              "name": "café americano",
+              "price": 5,
+              "image": "https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg",
+              "type": "desayuno",
+              "dateEntry": "2022-03-05  15:14:10"
+            }
+          },
+          {
+            "qty": 1,
+            "product": {
+              "id": 2341,
+              "name": "agua 500ml",
+              "price": 5,
+              "image": "https://wongfood.vtexassets.com/arquivos/ids/252192-800-auto?v=636754932463500000&width=800&height=auto&aspect=true",
+              "type": "almuerzo y cena",
+              "dateEntry": "2022-03-05  15:14:10"
+            }
+          }
+        ],
+        "status": "delivered",
+        "dataEntry": "2022-03-05  15:30:00",
+        "dateProcessed": "2022-03-05  16:00:00"
+      }
+    ]
+  }
