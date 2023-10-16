@@ -1,4 +1,10 @@
 const bcrypt = require('bcrypt');
+const app = require('../app');
+
+// Resto del código
+
+
+const { connect } = require('../connect');
 
 const {
   requireAuth,
@@ -9,8 +15,9 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const initAdminUser = (app, next) => {
+const initAdminUser = async (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
+  
   if (!adminEmail || !adminPassword) {
     return next();
   }
@@ -21,12 +28,36 @@ const initAdminUser = (app, next) => {
     roles: { admin: true },
   };
 
-  // TODO: crear usuaria admin
-  // Primero ver si ya existe adminUser en base de datos
-  // si no existe, hay que guardarlo
+  try {
+    const db = await connect();
+    const usersCollection = db.collection('Users');
+
+    // Comprueba si ya existe un usuario con el correo de administrador
+    const existingAdminUser = await usersCollection.findOne({ email: adminEmail });
+
+    if (!existingAdminUser) {
+      // Si no existe, crea el usuario administrador
+      await usersCollection.insertOne(adminUser);
+      console.log('Usuario administrador creado con éxito.');
+    } else {
+      console.log('El usuario administrador ya existe en la base de datos.');
+    }
+
+    // Asegúrate de cerrar la conexión después de usarla.
+    await db.close();
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+  }
 
   next();
 };
+
+// Llamar a la función initAdmin User
+initAdminUser(app, () => {
+  console.log('La función initAdminUser ha terminado.');
+  // Puedes agregar más código aquí si es necesario
+});
+
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
