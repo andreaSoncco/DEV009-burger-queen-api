@@ -36,8 +36,8 @@ routes(app, (err) => {
 
 
 
-
-/* const { MongoClient } = require("mongodb");
+/*
+ const { MongoClient } = require("mongodb");
 
 // Replace the uri string with your connection string.
 const uri = "mongodb+srv://daleskaSoncco:tomaleche88.@data.qyk0xrv.mongodb.net/?retryWrites=true&w=majority";
