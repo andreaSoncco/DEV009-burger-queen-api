@@ -1,10 +1,5 @@
 const bcrypt = require('bcrypt');
-
-
-// Resto del código
-
-
-const { connect } = require('../connect');
+const { connect } = require('../connect.js');
 
 const {
   requireAuth,
@@ -29,8 +24,7 @@ const initAdminUser = async (app, next) => {
   };
 
   try {
-    const client = await connect();
-    const db = client.db('BurgerQueenAPI');
+    const { client, db } = await connect();
     const usersCollection = db.collection('Users');
 
     // Comprueba si ya existe un usuario con el correo de administrador
