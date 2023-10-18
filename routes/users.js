@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const app = require('../app');
+
 
 // Resto del código
 
@@ -16,7 +16,7 @@ const {
 } = require('../controller/users');
 
 const initAdminUser = async (app, next) => {
-  const { adminEmail, adminPassword } = app.get('/config');
+  const { adminEmail, adminPassword } = app.get('config');
   
   if (!adminEmail || !adminPassword) {
     return next();
@@ -29,7 +29,8 @@ const initAdminUser = async (app, next) => {
   };
 
   try {
-    const db = await connect();
+    const client = await connect();
+    const db = client.db('BurgerQueenAPI');
     const usersCollection = db.collection('Users');
 
     // Comprueba si ya existe un usuario con el correo de administrador
@@ -44,7 +45,7 @@ const initAdminUser = async (app, next) => {
     }
 
     // Asegúrate de cerrar la conexión después de usarla.
-    await db.close();
+    await client.close();
   } catch (error) {
     console.error('Error al conectar a la base de datos:', error);
   }
@@ -52,11 +53,6 @@ const initAdminUser = async (app, next) => {
   next();
 };
 
-// Llamar a la función initAdmin User
-initAdminUser(app, () => {
-  console.log('La función initAdminUser ha terminado.');
-  // Puedes agregar más código aquí si es necesario
-});
 
 
 /*

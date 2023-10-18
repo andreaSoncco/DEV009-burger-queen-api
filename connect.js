@@ -5,9 +5,9 @@ async function connect() {
   const client = new MongoClient(dbUrl);
   try {
     await client.connect();
-    const db = client.db('BurgerQueenAPI');
-    console.log("hola");
-    return db;
+    // const db = client.db('BurgerQueenAPI');
+    // console.log("hola");
+    return client;
   } catch (error) {
     console.error('error', error);
   }

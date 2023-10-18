@@ -1,5 +1,9 @@
-const app = require('./app');
 const config = require('./config');
+const express = require('express');
+const app = express();
+
+
+module.exports = app;
 
 
 const authMiddleware = require('./middleware/auth');
