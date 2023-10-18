@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.1.2 - 2023-10-18
+
+### Sprint learnings
+
+- Crear un cluster en MongoDB Atlas
+- Conectar mi proyecto con el cluster
+- hacer funciones con CRUD MongoDB
+
+### Changed
+
+- Complete la funcion para conertar el proyecto con la base de datos alojada en MongoDB Atlas
+- Implemente la función para crear usuario admin
+
+### Fixed
+
+- Registre mi cuenta en MongoDB Atlas
+
 ## 1.0.1 - 2023-10-11
 
 ### Sprint learnings
