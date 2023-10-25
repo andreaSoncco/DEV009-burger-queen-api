@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const connect = require('../connect');
 
 const { secret } = config;
 
@@ -28,6 +29,8 @@ module.exports = (app, nextMain) => {
       }
 
        //verifica q exista en la bd
+       const { client, db } = await connect();
+       const Users = db.collection('Users');
        const userExist = await Users.findOne({email:req.body.email});
        if(!userExist){
            return next(404);
@@ -39,10 +42,14 @@ module.exports = (app, nextMain) => {
            return res.json({message:'Wrong credentials pass'});
        }
        const token = await jwt.sign({ id: userExist._id }, secret);
-       return resp.cookie({"token":token}).json({ "accessToken":token})//devuelve el token
+       
+       return resp.cookie("token", token).json({ "accessToken": token});
+
     } catch (error) {
           return resp.json({ error: error });
-      }
+    } finally {
+          await client.close();
+    }
   });
 
   return nextMain();

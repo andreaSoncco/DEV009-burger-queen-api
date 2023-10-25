@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.1.3 - 2023-10-25
+
+### Sprint learnings
+
+- Investigar del modelo cliente - servidor
+- Prácticar solicitudes, métodos y respuestas http
+- Ver los argumentos req y res y analizarlos en una función
+
+### Changed
+
+- Implementar autenticación de usuario
+- Implementar el middleware de autenticación
+
+### Fixed
+
+- Corregir la función de inicializar usuario
+
 ## 1.1.2 - 2023-10-18
 
 ### Sprint learnings

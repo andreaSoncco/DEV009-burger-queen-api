@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const connect = require('../connect');
 
 module.exports = (secret) => (req, resp, next) => {
   const { authorization } = req.headers;
@@ -19,6 +20,8 @@ module.exports = (secret) => (req, resp, next) => {
     }
 
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    const { client, db } = await connect();
+    const Users = db.collection('Users');
     const user = await Users.findById(decodedToken.id,{password: 0});
    
     if (!user) return next(404).json({message:"No user found"});
@@ -26,6 +29,8 @@ module.exports = (secret) => (req, resp, next) => {
     req.user = user;
 
     next();
+
+    await client.close();
   });
 };
 
