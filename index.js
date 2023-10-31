@@ -5,6 +5,8 @@ const app = express();
 
 module.exports = app;
 
+app.use(express.json()); // Para JSON
+app.use(express.urlencoded({ extended: true })); // Para datos codificados en URL
 
 const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/error');

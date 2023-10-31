@@ -138,9 +138,49 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-  app.post('/users', requireAdmin, (req, resp, next) => {
-    // TODO: implementar la ruta para agregar
-    // nuevos usuarios
+
+  app.post('/users', requireAdmin, async (req, resp, next) => {
+    try {
+      const { email, password, role } = req.body;
+  
+      // Verificar que se proporcionen email y password
+      if (!email || !password) {
+        return resp.status(400).json({ message: 'Se requieren email y password para crear un usuario.' });
+      }
+  
+      // Hash del password con bcrypt
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      const newUser = {
+        email,
+        password: hashedPassword,
+        role,
+      };
+  
+      const { client, db } = await connect();
+      const usersCollection = db.collection('Users');
+  
+      // Verificar si el usuario ya existe en la base de datos
+      const existingUser = await usersCollection.findOne({ email });
+  
+      if (existingUser) {
+        return resp.status(400).json({ message: 'El usuario ya existe en la base de datos.' });
+      }
+  
+      // Si el usuario no existe, crear un nuevo usuario
+      const result = await usersCollection.insertOne(newUser);
+
+      if (result.acknowledged) {
+        resp.status(201).json({ message: 'Usuario creado con éxito.', user: newUser });
+      } else {
+        resp.status(500).json({ message: 'No se pudo crear el usuario.' });
+      }
+      
+  
+      await client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**

@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
-const connect = require('../connect');
+const { connect } = require('../connect');
+const { ObjectId } = require('mongodb'); // Importa ObjectID desde el driver de MongoDB
 
-module.exports = (secret) => (req, resp, next) => {
+module.exports = (secret) => async (req, resp, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -19,36 +20,39 @@ module.exports = (secret) => (req, resp, next) => {
       return next(403);
     }
 
-    // TODO: Verificar identidad del usuario usando `decodeToken.uid`
+    // TODO: Verificar identidad del usuario usando `decodedToken.id`
     const { client, db } = await connect();
-    const Users = db.collection('Users');
-    const user = await Users.findById(decodedToken.id,{password: 0});
-   
-    if (!user) return next(404).json({message:"No user found"});
-    
-    req.user = user;
+    try {
+      const Users = db.collection('Users');
+      const user = await Users.findOne({ _id: new ObjectId(decodedToken.id) }, { projection: { password: 0 } });
+      console.log(decodedToken.id);
 
-    next();
 
-    await client.close();
+      if (!user) {
+        return resp.status(404).json({ message: "No user found" });
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      next(error);
+    } finally {
+      await client.close();
+    }
   });
 };
 
-module.exports.isAuthenticated = (req) => (req.user);
+module.exports.isAuthenticated = (req) => !!req.user;
 
-module.exports.isAdmin = (req) => (req.user.role=== "admin");
+module.exports.isAdmin = (req) => req.user && req.user.role === "admin";
 
 module.exports.requireAuth = (req, resp, next) => (
-  (!module.exports.isAuthenticated(req))
-    ? next(401)
-    : next()
+  !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') : next()
 );
 
 module.exports.requireAdmin = (req, resp, next) => (
-  // eslint-disable-next-line no-nested-ternary
-  (!module.exports.isAuthenticated(req))
-    ? next(401)
-    : (!module.exports.isAdmin(req))
-      ? next(403)
-      : next()
+  !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') :
+    !module.exports.isAdmin(req) ? resp.status(403).send('Forbidden') : next()
 );
+
+

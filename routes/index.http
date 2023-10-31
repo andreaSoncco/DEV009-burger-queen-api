@@ -1,0 +1,52 @@
+GET  http://localhost:8080
+Content-Type: application/json
+
+{
+  "email": "daleska828@gmail.com",
+  "password": 2772
+}
+
+###
+
+POST  http://localhost:8080/auth
+Content-Type: application/json
+
+{
+  "email": "example@email.com",
+  "password": "yourpassword"
+}
+
+###
+
+POST  http://localhost:8080/auth
+Content-Type: application/json
+
+{
+  "email": "andrea.soncco.c@gmail.com",
+  "password": "ElijoSerFeliz27"
+}
+
+###
+
+GET http://localhost:8080/users
+headers:
+authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzA0OWRkZDM1Y2VlNTAyMTM0ZDdlOSIsImlhdCI6MTY5ODcyNzU2MH0.kIedTb9sn0zp4Ld17CtEyFd6vDJZnOGtdJNN49kt6M0
+
+###
+
+
+POST http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzA0OWRkZDM1Y2VlNTAyMTM0ZDdlOSIsImlhdCI6MTY5ODcyOTUyOH0.WIPUqmPZcj6CbHpehiapRZNTEmULtzdRrgRA9Xqh2s8
+Content-Type: application/json
+
+{
+  "email": "nuevo_usuario@example.com",
+  "password": "nueva_contraseña_segura",
+  "role": "admin"
+}
+
+
+
+
+
+

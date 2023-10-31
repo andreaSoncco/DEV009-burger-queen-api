@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.4 - 2023-11-01
+
+### Sprint learnings
+
+- Aprender del Routing en Node.js
+- Conocer mejor los códigos de estado HTTP
+- Conceptos importantes en Express
+
+### Changed
+
+- Implementar la ruta GET/Users
+- Implementar la ruta POS/Users
+
+### Fixed
+
+- Corregir la autenticación de las peticiones
+
 ## 1.1.3 - 2023-10-25
 
 ### Sprint learnings
