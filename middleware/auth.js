@@ -48,9 +48,26 @@ module.exports.requireAuth = (req, resp, next) => (
   !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') : next()
 );
 
+/*
+module.exports.requireAdmin = (req, res, next) => {
+  if (!module.exports.isAuthenticated(req)) {
+    return res.status(401).send('Unauthorized');
+  } else if (!module.exports.isAdmin(req)) {
+    return res.status(403).send('Forbidden');
+  }
+  next(); // Llama a next solo si el usuario está autenticado y es administrador.
+};
+*/
+
 module.exports.requireAdmin = (req, resp, next) => (
-  !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') :
-   !module.exports.isAdmin(req) ? resp.status(403).send('Forbidden') : next()
+  // eslint-disable-next-line no-nested-ternary
+  (!module.exports.isAuthenticated(req))
+    ? resp.status(401).send('Unauthorized')
+    : (!module.exports.isAdmin(req))
+      ? resp.status(403).send('Forbidden')
+      : next()
 );
+
+
 
 

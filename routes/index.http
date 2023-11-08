@@ -37,11 +37,17 @@ Content-Type: application/json
   "password": "hola12hola"
 }
 
-###
+### Mostrar lista de usuarios si el usuario es Administrador
+
+GET http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NDIwNjg1LCJleHAiOjE2OTk1MDcwODV9.HY5ga0iYTTaq3ta-2zNQ2fqfH6O6zM_YmP7qm6ZBRVc
+
+
+### Mostrar lista de usuarios si el usuario no es Administrador
 
 GET http://localhost:8080/users
 headers:
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFjYWFjMjY2YmM4MTM2MjZhYmMwZiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NDAwNDMwLCJleHAiOjE2OTk0ODY4MzB9.1xljSu-8fEv_QUlDc9sY1w9f1Lk_RYLhFXA76Oazh7k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFjYWFjMjY2YmM4MTM2MjZhYmMwZiIsInJvbGVzIjp7ImFkbWluIjpmYWxzZX0sImlhdCI6MTY5OTQyMjY2NywiZXhwIjoxNjk5NTA5MDY3fQ.LAWW5096WyPcGs4p8zotp1T1oAEnCaDux0g6GLk99mw
 
 ###
 

@@ -12,13 +12,12 @@ module.exports = {
 
       // Buscar todos los usuarios en la colección
       const users = await Users.find({}).toArray();
-
-      resp.json(users); // Enviar la lista de usuarios como respuesta
       await client.close();
+
+      return users; // Enviar la lista de usuarios como respuesta
     } catch (error) {
       next(error);
     }
   }
-  
 };
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.3.5 - 2023-11-08
+
+### Sprint learnings
+
+- Aprender un poco de las pruebas integrales e2e
+- Repasar el concepto de middleware
+- Aprender sobre la organización y la distrubución de tareas en un Boilerplate
+
+### Changed
+
+- Implementar la ruta GET/Users/:Uid
+- Agregar los codigos de estado HTTP en las respuestas
+
+### Fixed
+
+- Corregir o cambiar alguna configuración pequeña en el GlobalSetUp de e2e
+
 ## 1.2.4 - 2023-11-01
 
 ### Sprint learnings

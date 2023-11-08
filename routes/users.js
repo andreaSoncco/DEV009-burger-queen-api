@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb'); // Asegúrate de importar ObjectId desde el paquete 'mongodb'
 const { connect } = require('../connect.js');
 
+
 const {
   requireAuth,
   requireAdmin,
@@ -76,6 +77,9 @@ const initAdminUser = async (app, next) => {
 
 /** @module users */
 module.exports = (app, next) => {
+
+  
+
   /**
    * @name GET /users
    * @description Lista usuarias
@@ -97,7 +101,22 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
-  app.get('/users', requireAdmin, getUsers);
+  
+  app.get('/users', requireAdmin, async (req, resp, next) => {
+    try {
+      const users = await getUsers(req, resp, next);
+      console.log("resp.statusUno", resp.status);
+      resp.json(users); // Esta línea se ejecutará solo si el usuario es administrador
+      console.log("resp.statusDos", resp.status);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  
+  
+  
+  
 
   /**
    * @name GET /users/:uid
