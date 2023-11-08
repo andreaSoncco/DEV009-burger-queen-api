@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { ObjectId } = require('mongodb'); // Asegúrate de importar ObjectId desde el paquete 'mongodb'
 const { connect } = require('../connect.js');
 
 const {
@@ -46,8 +47,6 @@ const initAdminUser = async (app, next) => {
 
   next();
 };
-
-
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
@@ -116,8 +115,42 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAuth, (req, resp) => {
+  
+  app.get('/users/:uid', requireAuth, async (req, resp, next) => {
+    try {
+      const { client, db } = await connect();
+      const Users = db.collection('Users');
+  
+      let requestedUser;
+      if (ObjectId.isValid(req.params.uid)) {
+        // Si el _id en la URL es un ObjectId válido, se convierte a ObjectId
+        requestedUser = await Users.findOne({ _id: new ObjectId(req.params.uid) });
+      } else {
+        // Si no es un ObjectId válido, se busca por el campo email
+        requestedUser = await Users.findOne({ email: req.params.uid });
+      }
+  
+      if (!requestedUser) {
+        return resp.status(404).json({ message: "Usuaria no encontrada" });
+      }
+  
+      const requestingUser = req.user;
+  
+      if (
+        !requestingUser.roles.admin &&
+        !requestingUser._id.equals(requestedUser._id) && // Compara ObjectId
+        requestingUser.email !== requestedUser.email
+      ) {
+        return resp.status(403).json({ message: "No tiene permisos para acceder a esta usuaria" });
+      }
+  
+      resp.json(requestedUser);
+      await client.close();
+    } catch (error) {
+      next(error);
+    }
   });
+  
 
   /**
    * @name POST /users
@@ -141,7 +174,7 @@ module.exports = (app, next) => {
 
   app.post('/users', requireAdmin, async (req, resp, next) => {
     try {
-      const { email, password, role } = req.body;
+      const { email, password, roles } = req.body;
   
       // Verificar que se proporcionen email y password
       if (!email || !password) {
@@ -154,7 +187,7 @@ module.exports = (app, next) => {
       const newUser = {
         email,
         password: hashedPassword,
-        role,
+        roles: { admin: true }
       };
   
       const { client, db } = await connect();
@@ -171,7 +204,7 @@ module.exports = (app, next) => {
       const result = await usersCollection.insertOne(newUser);
 
       if (result.acknowledged) {
-        resp.status(201).json({ message: 'Usuario creado con éxito.', user: newUser });
+        resp.status(200).json({ message: 'Usuario creado con éxito.', user: newUser });
       } else {
         resp.status(500).json({ message: 'No se pudo crear el usuario.' });
       }
@@ -205,8 +238,63 @@ module.exports = (app, next) => {
    * @code {403} una usuaria no admin intenta de modificar sus `roles`
    * @code {404} si la usuaria solicitada no existe
    */
-  app.put('/users/:uid', requireAuth, (req, resp, next) => {
+
+  app.put('/users/:uid', requireAuth, async (req, resp, next) => {
+    try {
+      const { client, db } = await connect();
+      const Users = db.collection('Users');
+      const uid = req.params.uid;
+  
+      let requestedUser;
+      if (ObjectId.isValid(uid)) {
+        requestedUser = await Users.findOne({ _id: new ObjectId(uid) });
+      } else {
+        requestedUser = await Users.findOne({ email: uid });
+      }
+  
+      if (!requestedUser) {
+        return resp.status(404).json({ message: "Usuaria no encontrada" });
+      }
+  
+      const requestingUser = req.user;
+  
+      if (
+        !requestingUser.roles.admin &&
+        !requestingUser._id.equals(requestedUser._id) && // Compara ObjectId
+        requestingUser.email !== requestedUser.email
+      ) {
+        return resp.status(403).json({ message: "No tiene permisos para modificar a esta usuaria" });
+      }
+  
+      const { email, password, roles } = req.body;
+  
+      if (!email || !password) {
+        return resp.status(400).json({ message: "Se requieren 'email' y 'password'" });
+      }
+  
+      if (roles && !requestingUser.roles.admin && roles.admin !== undefined && requestedUser.email === requestingUser.email) {
+        return resp.status(403).json({ message: "Una usuaria no admin no puede modificar 'roles'" });
+      }
+  
+      const updatedUser = await Users.findOneAndUpdate(
+        { _id: requestedUser._id },
+        { $set: { email, password, roles } },
+        { returnDocument: 'after' }
+      );
+  
+      if (!updatedUser.value) {
+        return resp.status(404).json({ message: "La usuaria solicitada no existe" });
+      }
+  
+      resp.json(updatedUser.value);
+      await client.close();
+    } catch (error) {
+      next(error);
+    }
   });
+
+
+  
 
   /**
    * @name DELETE /users

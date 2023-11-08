@@ -4,8 +4,6 @@ const { connect } = require('../connect');
 // ... (código previo)
 
 module.exports = {
-  // ... (otras funciones)
-
   getUsers: async (req, resp, next) => {
     try {
       const { client, db } = await connect();
@@ -21,4 +19,6 @@ module.exports = {
       next(error);
     }
   }
+  
 };
+

@@ -2,12 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt'); // Agregar importación para bcrypt
 const config = require('../config');
 const { connect } = require('../connect');
-// const express = require('express');
-// const app = express();
-
-// app.use(express.json()); // Para JSON
-// app.use(express.urlencoded({ extended: true })); // Para datos codificados en URL
-
 
 const { secret } = config;
 const saltRounds = 10; // Define la cantidad de rondas para bcrypt
@@ -34,7 +28,14 @@ module.exports = (app, nextMain) => {
         return resp.status(401).json({ error: 'Invalid credentials' });
       }
 
-      const token = jwt.sign({ id: userExist._id }, secret);
+      const u = {
+        id: userExist._id,
+        roles: userExist.roles
+      };
+
+      const token = jwt.sign(u, secret, {
+        expiresIn: 60 * 60 * 24 // expires in 24 hours
+      });
 
       resp.cookie('token', token, { httpOnly: true }); // Configura la cookie en la respuesta
 

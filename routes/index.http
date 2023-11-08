@@ -12,11 +12,12 @@ POST  http://localhost:8080/auth
 Content-Type: application/json
 
 {
-  "email": "example@email.com",
-  "password": "yourpassword"
+  "email": "andrea.soncco.c@gmail.com",
+  "password": "ElijoSerFeliz27",
+  "roles": {"admin": true}
 }
 
-###
+### Usuario admin
 
 POST  http://localhost:8080/auth
 Content-Type: application/json
@@ -26,25 +27,48 @@ Content-Type: application/json
   "password": "ElijoSerFeliz27"
 }
 
+### Usuario no admin
+
+POST  http://localhost:8080/auth
+Content-Type: application/json
+
+{
+  "email": "alexandra15@gmail.com",
+  "password": "hola12hola"
+}
+
 ###
 
 GET http://localhost:8080/users
 headers:
-authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzA0OWRkZDM1Y2VlNTAyMTM0ZDdlOSIsImlhdCI6MTY5ODcyNzU2MH0.kIedTb9sn0zp4Ld17CtEyFd6vDJZnOGtdJNN49kt6M0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFjYWFjMjY2YmM4MTM2MjZhYmMwZiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NDAwNDMwLCJleHAiOjE2OTk0ODY4MzB9.1xljSu-8fEv_QUlDc9sY1w9f1Lk_RYLhFXA76Oazh7k
 
 ###
 
+GET http://localhost:8080/users
+headers:
+Authorization: Bearer uyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
+
+###
 
 POST http://localhost:8080/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzA0OWRkZDM1Y2VlNTAyMTM0ZDdlOSIsImlhdCI6MTY5ODcyOTUyOH0.WIPUqmPZcj6CbHpehiapRZNTEmULtzdRrgRA9Xqh2s8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
 Content-Type: application/json
 
 {
-  "email": "nuevo_usuario@example.com",
-  "password": "nueva_contraseña_segura",
-  "role": "admin"
+  "email": "alexandra15@gmail.com",
+  "password": "hola12hola",
+  "roles": {"admin": false}
 }
 
+####
+
+GET http://localhost:8080/users/daleska828%40gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
+
+### 
+GET http://localhost:8080/users/6529bd260fc8b1cd54025be9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
 
 
 

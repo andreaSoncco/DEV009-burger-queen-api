@@ -25,9 +25,7 @@ module.exports = (secret) => async (req, resp, next) => {
     try {
       const Users = db.collection('Users');
       const user = await Users.findOne({ _id: new ObjectId(decodedToken.id) }, { projection: { password: 0 } });
-      console.log(decodedToken.id);
-
-
+    
       if (!user) {
         return resp.status(404).json({ message: "No user found" });
       }
@@ -44,7 +42,7 @@ module.exports = (secret) => async (req, resp, next) => {
 
 module.exports.isAuthenticated = (req) => !!req.user;
 
-module.exports.isAdmin = (req) => req.user && req.user.role === "admin";
+module.exports.isAdmin = (req) => req.user && req.user.roles && req.user.roles.admin === true;
 
 module.exports.requireAuth = (req, resp, next) => (
   !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') : next()
@@ -52,7 +50,7 @@ module.exports.requireAuth = (req, resp, next) => (
 
 module.exports.requireAdmin = (req, resp, next) => (
   !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') :
-    !module.exports.isAdmin(req) ? resp.status(403).send('Forbidden') : next()
+   !module.exports.isAdmin(req) ? resp.status(403).send('Forbidden') : next()
 );
 
 
