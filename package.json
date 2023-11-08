@@ -22,6 +22,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^5.9.0",
     "mongodb-memory-server": "^8.12.2"
   },
   "devDependencies": {
@@ -30,7 +31,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.22.1",
     "gh-pages": "^3.1.0",
-    "jest": "^27.0.1",
+    "jest": "^27.5.1",
     "jsdoc": "^3.6.6",
     "jsdoc-http-plugin": "^0.3.2",
     "node-fetch": "^3.1.0",
@@ -40,5 +41,8 @@
     "createdAt": "2023-09-07T22:09:46.212Z",
     "version": "7.0.0",
     "commit": "83f7c5b700737b948113a4c663f5a826eb3cbe83"
-  }
+  },
+  "description": "* [1. Preámbulo](#1-pre%C3%A1mbulo)\r * [2. Resumen del proyecto](#2-resumen-del-proyecto)\r * [3. Objetivos de aprendizaje](#3-objetivos-de-aprendizaje)\r * [4. Consideraciones generales](#4-consideraciones-generales)\r * [5. Criterios de aceptación mínimos del proyecto](#5-criterios-de-aceptaci%C3%B3n-m%C3%ADnimos-del-proyecto)\r * [6. Hacker (Devops) Edition con Docker](#6-hacker-%28devops%29-edition-con-docker)\r * [7. Pistas, tips y lecturas complementarias](#7-pistas-tips-y-lecturas-complementarias)",
+  "keywords": [],
+  "author": ""
 }

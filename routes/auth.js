@@ -1,35 +1,48 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt'); // Agregar importación para bcrypt
 const config = require('../config');
+const { connect } = require('../connect');
+// const express = require('express');
+// const app = express();
+
+// app.use(express.json()); // Para JSON
+// app.use(express.urlencoded({ extended: true })); // Para datos codificados en URL
+
 
 const { secret } = config;
+const saltRounds = 10; // Define la cantidad de rondas para bcrypt
 
-/** @module auth */
 module.exports = (app, nextMain) => {
-  /**
-   * @name /auth
-   * @description Crea token de autenticación.
-   * @path {POST} /auth
-   * @body {String} email Correo
-   * @body {String} password Contraseña
-   * @response {Object} resp
-   * @response {String} resp.token Token a usar para los requests sucesivos
-   * @code {200} si la autenticación es correcta
-   * @code {400} si no se proveen `email` o `password` o ninguno de los dos
-   * @auth No requiere autenticación
-   */
-  app.post('/auth', (req, resp, next) => {
+  app.post('/auth', async (req, resp, next) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return next(400);
+    try {
+      if (!email || !password) {
+        return resp.status(400).json({ error: 'Email and password are required' });
+      }
+
+      const { client, db } = await connect();
+      const Users = db.collection('Users');
+      const userExist = await Users.findOne({ email: email });
+      await client.close(); // Asegúrate de cerrar la conexión a la base de datos
+      if (!userExist) {
+        return resp.status(404).json({ error: 'User not found' });
+      }
+
+      const isPasswordMatched = await bcrypt.compare(password, userExist.password);
+      if (!isPasswordMatched) {
+        return resp.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      const token = jwt.sign({ id: userExist._id }, secret);
+
+      resp.cookie('token', token, { httpOnly: true }); // Configura la cookie en la respuesta
+
+      return resp.status(200).json({ accessToken: token });
+
+    } catch (error) {
+      return resp.status(500).json({ error: error.message });
     }
-
-    // TODO: autenticar a la usuarix
-    // Hay que confirmar si el email y password
-    // coinciden con un user en la base de datos
-    // Si coinciden, manda un access token creado con jwt
-
-    next();
   });
 
   return nextMain();

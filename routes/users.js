@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { connect } = require('../connect.js');
 
 const {
   requireAuth,
@@ -9,8 +10,9 @@ const {
   getUsers,
 } = require('../controller/users');
 
-const initAdminUser = (app, next) => {
+const initAdminUser = async (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
+  
   if (!adminEmail || !adminPassword) {
     return next();
   }
@@ -21,12 +23,31 @@ const initAdminUser = (app, next) => {
     roles: { admin: true },
   };
 
-  // TODO: crear usuaria admin
-  // Primero ver si ya existe adminUser en base de datos
-  // si no existe, hay que guardarlo
+  try {
+    const { client, db } = await connect();
+    const usersCollection = db.collection('Users');
+
+    // Comprueba si ya existe un usuario con el correo de administrador
+    const existingAdminUser = await usersCollection.findOne({ email: adminEmail });
+
+    if (!existingAdminUser) {
+      // Si no existe, crea el usuario administrador
+      await usersCollection.insertOne(adminUser);
+      console.log('Usuario administrador creado con éxito.');
+    } else {
+      console.log('El usuario administrador ya existe en la base de datos.');
+    }
+
+    // Asegúrate de cerrar la conexión después de usarla.
+    await client.close();
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+  }
 
   next();
 };
+
+
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
@@ -117,9 +138,49 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si ya existe usuaria con ese `email`
    */
-  app.post('/users', requireAdmin, (req, resp, next) => {
-    // TODO: implementar la ruta para agregar
-    // nuevos usuarios
+
+  app.post('/users', requireAdmin, async (req, resp, next) => {
+    try {
+      const { email, password, role } = req.body;
+  
+      // Verificar que se proporcionen email y password
+      if (!email || !password) {
+        return resp.status(400).json({ message: 'Se requieren email y password para crear un usuario.' });
+      }
+  
+      // Hash del password con bcrypt
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      const newUser = {
+        email,
+        password: hashedPassword,
+        role,
+      };
+  
+      const { client, db } = await connect();
+      const usersCollection = db.collection('Users');
+  
+      // Verificar si el usuario ya existe en la base de datos
+      const existingUser = await usersCollection.findOne({ email });
+  
+      if (existingUser) {
+        return resp.status(400).json({ message: 'El usuario ya existe en la base de datos.' });
+      }
+  
+      // Si el usuario no existe, crear un nuevo usuario
+      const result = await usersCollection.insertOne(newUser);
+
+      if (result.acknowledged) {
+        resp.status(201).json({ message: 'Usuario creado con éxito.', user: newUser });
+      } else {
+        resp.status(500).json({ message: 'No se pudo crear el usuario.' });
+      }
+      
+  
+      await client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
