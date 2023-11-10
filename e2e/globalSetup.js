@@ -20,8 +20,8 @@ const __e2e = {
   adminToken: null,
   testUserCredentials: {
     email: 'test@test.test',
-    password: '123456',
-    roles: { "waiter": true }
+    password: 'rapidos6furiosos',
+    roles: { "admin": false }
   },
   testUserToken: null,
   childProcessPid: null,
@@ -73,7 +73,7 @@ const createTestUser = () => fetchAsAdmin('/users', {
     }
     return resp.json();
   })
-  .then(( token ) => Object.assign(__e2e, { testUserToken: token.accessToken }));
+  .then(({ token }) => Object.assign(__e2e, { testUserToken: token }));
 
 const checkAdminCredentials = () => fetch('/auth', {
   method: 'POST',
@@ -83,10 +83,10 @@ const checkAdminCredentials = () => fetch('/auth', {
     if (resp.status !== 200) {
       throw new Error(`Error: Could not authenticate as admin user - response ${resp.status}`);
     }
-
+    console.log("_e2e.adminUserCredentials", __e2e.adminUserCredentials);
     return resp.json();
   })
-  .then(( token ) => Object.assign(__e2e, { adminToken: token.accessToken }));
+  .then(({ token }) => Object.assign(__e2e, { adminToken: token }));
 
 const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) => {
   if (!retries) {

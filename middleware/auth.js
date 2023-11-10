@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { connect } = require('../connect');
 const { ObjectId } = require('mongodb'); // Importa ObjectID desde el driver de MongoDB
+const { secret } = require('../config');
 
 module.exports = (secret) => async (req, resp, next) => {
   const { authorization } = req.headers;
@@ -42,30 +43,15 @@ module.exports = (secret) => async (req, resp, next) => {
 
 module.exports.isAuthenticated = (req) => !!req.user;
 
-module.exports.isAdmin = (req) => req.user && req.user.roles && req.user.roles.admin === true;
+module.exports.isAdmin = (req) => req.user.roles.admin === true;
 
 module.exports.requireAuth = (req, resp, next) => (
   !module.exports.isAuthenticated(req) ? resp.status(401).send('Unauthorized') : next()
 );
 
-/*
-module.exports.requireAdmin = (req, res, next) => {
-  if (!module.exports.isAuthenticated(req)) {
-    return res.status(401).send('Unauthorized');
-  } else if (!module.exports.isAdmin(req)) {
-    return res.status(403).send('Forbidden');
-  }
-  next(); // Llama a next solo si el usuario está autenticado y es administrador.
-};
-*/
-
 module.exports.requireAdmin = (req, resp, next) => (
   // eslint-disable-next-line no-nested-ternary
-  (!module.exports.isAuthenticated(req))
-    ? resp.status(401).send('Unauthorized')
-    : (!module.exports.isAdmin(req))
-      ? resp.status(403).send('Forbidden')
-      : next()
+  !module.exports.isAdmin(req) ? resp.status(403).send('Forbidden') : next()
 );
 
 

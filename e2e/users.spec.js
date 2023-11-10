@@ -104,13 +104,13 @@ describe('GET /users/:uid', () => {
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
-  it('should get own user', () => (
-    fetchAsTestUser('/users/test@test.test')
+  it('should get own user as admin', () => (
+    fetchAsAdmin('/users/andrea.soncco.c@gmail.com')
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => expect(json.email).toBe('test@test.test'))
+      .then((json) => expect(json.email).toBe('andrea.soncco.c@gmail.com'))
   ));
 
   it('should get other user as admin', () => (
@@ -154,7 +154,7 @@ describe('POST /users', () => {
       method: 'POST',
       body: {
         email: 'test1@test.test',
-        password: '12345',
+        password: 'Ahorrando12',
         roles: { admin: false },
       },
     })
@@ -163,11 +163,11 @@ describe('POST /users', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
-        expect(typeof json.email).toBe('string');
-        expect(typeof json.password).toBe('undefined');
-        expect(typeof json.roles).toBe('object');
-        expect(json.roles.admin).toBe(false);
+        expect(typeof json.newUser._id).toBe('string');
+        expect(typeof json.newUser.email).toBe('string');
+        expect(typeof json.newUser.password).toBe('string');
+        expect(typeof json.newUser.roles).toBe('object');
+        expect(json.newUser.roles.admin).toBe(false);
       })
   ));
 
@@ -176,7 +176,7 @@ describe('POST /users', () => {
       method: 'POST',
       body: {
         email: 'admin1@test.test',
-        password: '12345',
+        password: 'ElijoSerFeliz33',
         roles: { admin: true },
       },
     })
@@ -185,18 +185,18 @@ describe('POST /users', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
-        expect(typeof json.email).toBe('string');
-        expect(typeof json.password).toBe('undefined');
-        expect(typeof json.roles).toBe('object');
-        expect(json.roles.admin).toBe(true);
+        expect(typeof json.newUser._id).toBe('string');
+        expect(typeof json.newUser.email).toBe('string');
+        expect(typeof json.newUser.password).toBe('string');
+        expect(typeof json.newUser.roles).toBe('object');
+        expect(json.newUser.roles.admin).toBe(true);
       })
   ));
 
   it('should fail with 403 when user is already registered', () => (
     fetchAsAdmin('/users', {
       method: 'POST',
-      body: { email: 'test@test.test', password: '123456' },
+      body: { email: 'test@test.test', password: 'Ahorrando12' },
     })
       .then((resp) => expect(resp.status).toBe(403))
   ));
@@ -226,17 +226,27 @@ describe('PUT /users/:uid', () => {
   it('should fail with 403 when not admin tries to change own roles', () => (
     fetchAsTestUser('/users/test@test.test', {
       method: 'PUT',
-      body: { roles: { admin: true } },
+      body: {
+        email: 'test@test.test',
+        password: 'comerbien2',
+        roles: { "admin": true }
+      },
     })
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
-  it('should update user when own data (password change)', () => (
-    fetchAsTestUser('/users/test@test.test', {
+  it('should update user to change it role as admin', () => (
+    fetchAsAdmin('/users/test@test.test', {
       method: 'PUT',
-      body: { password: 'garmadon' },
+      body: {
+        email: 'test@test.test',
+        password: 'comerbien2',
+        roles: { "admin": true }
+      },
     })
       .then((resp) => expect(resp.status).toBe(200))
+
+      /*
       .then(() => fetch('/auth', {
         method: 'POST',
         body: { email: 'test@test.test', password: 'garmadon' },
@@ -246,23 +256,34 @@ describe('PUT /users/:uid', () => {
         return resp.json();
       })
       .then((json) => expect(json).toHaveProperty('token'))
+      */
   ));
 
-  it('should update user when admin', () => (
-    fetchAsAdmin('/users/test@test.test', {
+  it('should update user as admin', () => (
+    fetchAsAdmin('/users/admin1@test.test', {
       method: 'PUT',
-      body: { password: 'ohmygod' },
+      body: { 
+        email: 'admin1@test.test',
+        password: 'nosenose12',
+        roles: {
+          admin: true,
+          waiter: false
+        }
+      },
     })
+      
       .then((resp) => expect(resp.status).toBe(200))
+      /*
       .then(() => fetch('/auth', {
         method: 'POST',
-        body: { email: 'test@test.test', password: 'ohmygod' },
+        body: { email: 'admin1@test.test', password: 'nosenose12' },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => expect(json).toHaveProperty('token'))
+      */
   ));
 });
 

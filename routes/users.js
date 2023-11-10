@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb'); // Asegúrate de importar ObjectId desde el paquete 'mongodb'
 const { connect } = require('../connect.js');
 
+const saltRounds = 10; 
 
 const {
   requireAuth,
@@ -102,12 +103,12 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin
    */
   
-  app.get('/users', requireAdmin, async (req, resp, next) => {
+  app.get('/users', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
       const users = await getUsers(req, resp, next);
-      console.log("resp.statusUno", resp.status);
+      
       resp.json(users); // Esta línea se ejecutará solo si el usuario es administrador
-      console.log("resp.statusDos", resp.status);
+      
     } catch (error) {
       next(error);
     }
@@ -135,7 +136,7 @@ module.exports = (app, next) => {
    * @code {404} si la usuaria solicitada no existe
    */
   
-  app.get('/users/:uid', requireAuth, async (req, resp, next) => {
+  app.get('/users/:uid', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
       const { client, db } = await connect();
       const Users = db.collection('Users');
@@ -154,14 +155,6 @@ module.exports = (app, next) => {
       }
   
       const requestingUser = req.user;
-  
-      if (
-        !requestingUser.roles.admin &&
-        !requestingUser._id.equals(requestedUser._id) && // Compara ObjectId
-        requestingUser.email !== requestedUser.email
-      ) {
-        return resp.status(403).json({ message: "No tiene permisos para acceder a esta usuaria" });
-      }
   
       resp.json(requestedUser);
       await client.close();
@@ -193,7 +186,18 @@ module.exports = (app, next) => {
 
   app.post('/users', requireAdmin, async (req, resp, next) => {
     try {
-      const { email, password, roles } = req.body;
+      const { id, email, password, roles } = req.body;
+
+      let validEmail =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+
+      if ((typeof password !== 'string') || (!/\d/.test(password)) || (password.length < 9)) {
+        return resp.status(400).json({ message: 'La contraseña debe contener minimo 8 caracteres y al menos un número.' });
+      }
+    
+
+	    if( !validEmail.test(email) ){
+        return resp.status(400).json({ message: 'Se requieren email valido.' });
+      }
   
       // Verificar que se proporcionen email y password
       if (!email || !password) {
@@ -204,9 +208,10 @@ module.exports = (app, next) => {
       const hashedPassword = await bcrypt.hash(password, 10);
   
       const newUser = {
+        id: id,
         email,
         password: hashedPassword,
-        roles: { admin: true }
+        roles: roles
       };
   
       const { client, db } = await connect();
@@ -216,14 +221,14 @@ module.exports = (app, next) => {
       const existingUser = await usersCollection.findOne({ email });
   
       if (existingUser) {
-        return resp.status(400).json({ message: 'El usuario ya existe en la base de datos.' });
+        return resp.status(403).json({ message: 'El usuario ya existe en la base de datos.' });
       }
   
       // Si el usuario no existe, crear un nuevo usuario
       const result = await usersCollection.insertOne(newUser);
 
       if (result.acknowledged) {
-        resp.status(200).json({ message: 'Usuario creado con éxito.', user: newUser });
+        resp.status(200).json({ newUser });
       } else {
         resp.status(500).json({ message: 'No se pudo crear el usuario.' });
       }
@@ -258,7 +263,7 @@ module.exports = (app, next) => {
    * @code {404} si la usuaria solicitada no existe
    */
 
-  app.put('/users/:uid', requireAuth, async (req, resp, next) => {
+  app.put('/users/:uid', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
       const { client, db } = await connect();
       const Users = db.collection('Users');
@@ -276,7 +281,7 @@ module.exports = (app, next) => {
       }
   
       const requestingUser = req.user;
-  
+      /*
       if (
         !requestingUser.roles.admin &&
         !requestingUser._id.equals(requestedUser._id) && // Compara ObjectId
@@ -284,17 +289,17 @@ module.exports = (app, next) => {
       ) {
         return resp.status(403).json({ message: "No tiene permisos para modificar a esta usuaria" });
       }
-  
+      */
       const { email, password, roles } = req.body;
   
       if (!email || !password) {
         return resp.status(400).json({ message: "Se requieren 'email' y 'password'" });
       }
-  
+      /*
       if (roles && !requestingUser.roles.admin && roles.admin !== undefined && requestedUser.email === requestingUser.email) {
         return resp.status(403).json({ message: "Una usuaria no admin no puede modificar 'roles'" });
       }
-  
+      */
       const updatedUser = await Users.findOneAndUpdate(
         { _id: requestedUser._id },
         { $set: { email, password, roles } },
@@ -304,8 +309,9 @@ module.exports = (app, next) => {
       if (!updatedUser.value) {
         return resp.status(404).json({ message: "La usuaria solicitada no existe" });
       }
-  
-      resp.json(updatedUser.value);
+      console.log("updatedUser", updatedUser);
+      console.log("updatedUser.value", updatedUser.value);
+      resp.status(200).json(updatedUser.value);
       await client.close();
     } catch (error) {
       next(error);

@@ -39,7 +39,7 @@ module.exports = (app, nextMain) => {
 
       resp.cookie('token', token, { httpOnly: true }); // Configura la cookie en la respuesta
 
-      return resp.status(200).json({ accessToken: token });
+      return resp.status(200).json({ token });
 
     } catch (error) {
       return resp.status(500).json({ error: error.message });
