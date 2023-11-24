@@ -18,12 +18,18 @@ const __e2e = {
     password: config.adminPassword,
   },
   adminToken: null,
-  testUserCredentials: {
+  testUser1Credentials: {
     email: 'test@test.test',
     password: 'rapidos6furiosos',
     roles: { "admin": false }
   },
-  testUserToken: null,
+  testUser1Token: null,
+  testUser2Credentials: {
+    email: 'test2@test.test',
+    password: 'napoleon282',
+    roles: { "admin": false }
+  },
+  testUser2Token: null,
   childProcessPid: null,
   // in `testObjects` we keep track of objects created during the test run so
   // that we can clean up before exiting.
@@ -54,18 +60,19 @@ const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
 });
 
 const fetchAsAdmin = (url, opts) => fetchWithAuth(__e2e.adminToken)(url, opts);
-const fetchAsTestUser = (url, opts) => fetchWithAuth(__e2e.testUserToken)(url, opts);
+const fetchAsTestUser1 = (url, opts) => fetchWithAuth(__e2e.testUser1Token)(url, opts);
+const fetchAsTestUser2 = (url, opts) => fetchWithAuth(__e2e.testUser2Token)(url, opts);
 
-const createTestUser = () => fetchAsAdmin('/users', {
+const createTestUser1 = () => fetchAsAdmin('/users', {
   method: 'POST',
-  body: __e2e.testUserCredentials,
+  body: __e2e.testUser1Credentials,
 })
   .then((resp) => {
   
     if (resp.status !== 200) {
       throw new Error(`Error: Could not create test user - response ${resp.status}`);
     }
-    return fetch('/auth', { method: 'POST', body: __e2e.testUserCredentials });
+    return fetch('/auth', { method: 'POST', body: __e2e.testUser1Credentials });
   })
   .then((resp) => {
     if (resp.status !== 200) {
@@ -73,7 +80,27 @@ const createTestUser = () => fetchAsAdmin('/users', {
     }
     return resp.json();
   })
-  .then(({ token }) => Object.assign(__e2e, { testUserToken: token }));
+  .then(({ token }) => Object.assign(__e2e, { testUser1Token: token }));
+
+const createTestUser2 = () => fetchAsAdmin('/users', {
+  method: 'POST',
+  body: __e2e.testUser2Credentials,
+})
+
+  .then((resp) => {
+    
+    if (resp.status !== 200) {
+      throw new Error(`Error: Could not create test user - response ${resp.status}`);
+    }
+    return fetch('/auth', { method: 'POST', body: __e2e.testUser2Credentials });
+  })
+  .then((resp) => {
+    if (resp.status !== 200) {
+      throw new Error(`Error: Could not authenticate test user - response ${resp.status}`);
+    }
+    return resp.json();
+  })
+  .then(({ token }) => Object.assign(__e2e, { testUser2Token: token }));
 
 const checkAdminCredentials = () => fetch('/auth', {
   method: 'POST',
@@ -144,7 +171,8 @@ module.exports = () => new Promise((resolve, reject) => {
 
     waitForServerToBeReady()
       .then(checkAdminCredentials)
-      .then(createTestUser)
+      .then(createTestUser1)
+      .then(createTestUser2)
       .then(resolve)
       .catch((err) => {
         console.log('there was an error');
@@ -161,4 +189,5 @@ process.baseUrl = baseUrl;
 process.fetch = fetch;
 process.fetchWithAuth = fetchWithAuth;
 process.fetchAsAdmin = fetchAsAdmin;
-process.fetchAsTestUser = fetchAsTestUser;
+process.fetchAsTestUser1 = fetchAsTestUser1;
+process.fetchAsTestUser2 = fetchAsTestUser2;

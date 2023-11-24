@@ -24,6 +24,7 @@ module.exports = (app, nextMain) => {
       }
 
       const isPasswordMatched = await bcrypt.compare(password, userExist.password);
+      console.log("las contraseñas coinciden?:", isPasswordMatched);
       if (!isPasswordMatched) {
         return resp.status(401).json({ error: 'Invalid credentials' });
       }

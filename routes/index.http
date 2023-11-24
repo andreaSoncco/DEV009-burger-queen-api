@@ -34,7 +34,7 @@ Content-Type: application/json
 
 {
   "email": "celsonca@gmail.com",
-  "password": "nose8nose"
+  "password": "navidad1727"
 }
 
 ### Mostrar lista de usuarios si el usuario es Administrador
@@ -58,19 +58,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM
 ### Crear un NUEVO USUARIO como administrador
 
 POST http://localhost:8080/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTc0NTk2LCJleHAiOjE2OTk2NjA5OTZ9.DDwVY-tPnidk5GPpZNgtvH-Z-K5H_A00j20QruUmoDU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
 Content-Type: application/json
 
 {
   "email": "daleska828@gmail.com",
-  "password": "queridala7",
+  "password": "queridalaA7",
   "roles": { "admin": false }
 }
 
 ### Crear un NUEVO USUARIO como administrador
 
 POST http://localhost:8080/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTc0NTk2LCJleHAiOjE2OTk2NjA5OTZ9.DDwVY-tPnidk5GPpZNgtvH-Z-K5H_A00j20QruUmoDU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
 Content-Type: application/json
 
 {
@@ -120,7 +120,7 @@ Content-Type: application/json
 
 {
   "email": "celsonca@gmail.com",
-  "password": "nose8nose",
+  "password": "navidad1727",
   "roles": {
     "admin": true,
     "waiter": true 
@@ -168,6 +168,16 @@ Content-Type: application/json
     "waiter": false
   }
 }
+
+### Eliminar usuario por el Parametro de Ruta (_id) si el usuario es administrador
+DELETE  http://localhost:8080/users/65600529b5e2d51406a73af4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
+
+### Eliminar usuario por el Parametro de Ruta (_id) si el usuario NO es administrador
+DELETE  http://localhost:8080/users/654d78a2e23a8ebd6fff7d35
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ3OGEyZTIzYThlYmQ2ZmZmN2QzNSIsInJvbGVzIjp7ImFkbWluIjpmYWxzZSwid2FpdGVyIjp0cnVlfSwiaWF0IjoxNzAwNzczNTg5LCJleHAiOjE3MDA4NTk5ODl9.nFx0lZrEqdkFyCBEgNFyNgqHpEsBkwZLzxYW8-ve68Q
+
+
 
 
 

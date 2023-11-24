@@ -1,8 +1,6 @@
 const bcrypt = require('bcrypt');
-const { ObjectId } = require('mongodb'); // Asegúrate de importar ObjectId desde el paquete 'mongodb'
+const { ObjectId } = require('mongodb');
 const { connect } = require('../connect.js');
-
-const saltRounds = 10; 
 
 const {
   requireAuth,
@@ -30,18 +28,15 @@ const initAdminUser = async (app, next) => {
     const { client, db } = await connect();
     const usersCollection = db.collection('Users');
 
-    // Comprueba si ya existe un usuario con el correo de administrador
     const existingAdminUser = await usersCollection.findOne({ email: adminEmail });
 
     if (!existingAdminUser) {
-      // Si no existe, crea el usuario administrador
       await usersCollection.insertOne(adminUser);
       console.log('Usuario administrador creado con éxito.');
     } else {
       console.log('El usuario administrador ya existe en la base de datos.');
     }
 
-    // Asegúrate de cerrar la conexión después de usarla.
     await client.close();
   } catch (error) {
     console.error('Error al conectar a la base de datos:', error);
@@ -79,8 +74,6 @@ const initAdminUser = async (app, next) => {
 /** @module users */
 module.exports = (app, next) => {
 
-  
-
   /**
    * @name GET /users
    * @description Lista usuarias
@@ -106,19 +99,13 @@ module.exports = (app, next) => {
   app.get('/users', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
       const users = await getUsers(req, resp, next);
-      
-      resp.json(users); // Esta línea se ejecutará solo si el usuario es administrador
+      resp.json(users);
       
     } catch (error) {
       next(error);
     }
   });
   
-  
-  
-  
-  
-
   /**
    * @name GET /users/:uid
    * @description Obtiene información de una usuaria
@@ -143,18 +130,14 @@ module.exports = (app, next) => {
   
       let requestedUser;
       if (ObjectId.isValid(req.params.uid)) {
-        // Si el _id en la URL es un ObjectId válido, se convierte a ObjectId
         requestedUser = await Users.findOne({ _id: new ObjectId(req.params.uid) });
       } else {
-        // Si no es un ObjectId válido, se busca por el campo email
         requestedUser = await Users.findOne({ email: req.params.uid });
       }
   
       if (!requestedUser) {
         return resp.status(404).json({ message: "Usuaria no encontrada" });
       }
-  
-      const requestingUser = req.user;
   
       resp.json(requestedUser);
       await client.close();
@@ -163,7 +146,6 @@ module.exports = (app, next) => {
     }
   });
   
-
   /**
    * @name POST /users
    * @description Crea una usuaria
@@ -184,7 +166,7 @@ module.exports = (app, next) => {
    * @code {403} si ya existe usuaria con ese `email`
    */
 
-  app.post('/users', requireAdmin, async (req, resp, next) => {
+  app.post('/users', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
       const { id, email, password, roles } = req.body;
 
@@ -193,7 +175,6 @@ module.exports = (app, next) => {
       if ((typeof password !== 'string') || (!/\d/.test(password)) || (password.length < 9)) {
         return resp.status(400).json({ message: 'La contraseña debe contener minimo 8 caracteres y al menos un número.' });
       }
-    
 
 	    if( !validEmail.test(email) ){
         return resp.status(400).json({ message: 'Se requieren email valido.' });
@@ -280,46 +261,33 @@ module.exports = (app, next) => {
         return resp.status(404).json({ message: "Usuaria no encontrada" });
       }
   
-      const requestingUser = req.user;
-      /*
-      if (
-        !requestingUser.roles.admin &&
-        !requestingUser._id.equals(requestedUser._id) && // Compara ObjectId
-        requestingUser.email !== requestedUser.email
-      ) {
-        return resp.status(403).json({ message: "No tiene permisos para modificar a esta usuaria" });
-      }
-      */
       const { email, password, roles } = req.body;
+
+      if (Object.keys(req.body).length === 0) {
+        return resp.status(400).json({ message: "No se proporcionaron accesorios para actualizar" });
+      }
   
-      if (!email || !password) {
+      if (!email || !password ) {
         return resp.status(400).json({ message: "Se requieren 'email' y 'password'" });
       }
-      /*
-      if (roles && !requestingUser.roles.admin && roles.admin !== undefined && requestedUser.email === requestingUser.email) {
-        return resp.status(403).json({ message: "Una usuaria no admin no puede modificar 'roles'" });
-      }
-      */
+     
+      const passwordSecond = bcrypt.hashSync(password, 10);
+
       const updatedUser = await Users.findOneAndUpdate(
         { _id: requestedUser._id },
-        { $set: { email, password, roles } },
+        { $set: { email, password: passwordSecond, roles } },
         { returnDocument: 'after' }
       );
   
       if (!updatedUser.value) {
         return resp.status(404).json({ message: "La usuaria solicitada no existe" });
       }
-      console.log("updatedUser", updatedUser);
-      console.log("updatedUser.value", updatedUser.value);
       resp.status(200).json(updatedUser.value);
       await client.close();
     } catch (error) {
       next(error);
     }
   });
-
-
-  
 
   /**
    * @name DELETE /users
@@ -337,7 +305,35 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.delete('/users/:uid', requireAuth, (req, resp, next) => {
+  app.delete('/users/:uid', requireAuth, requireAdmin, async(req, resp, next) => {
+
+    try {
+      const { client, db } = await connect();
+      const Users = db.collection('Users');
+        
+      let requestedUser;
+      if (ObjectId.isValid(req.params.uid)) {
+        requestedUser = await Users.findOne({ _id: new ObjectId(req.params.uid) });
+      } else {
+        requestedUser = await Users.findOne({ email: req.params.uid });
+      }
+      
+      if (!requestedUser) {
+        return resp.status(404).json({ message: "Usuario no encontrado" }); // El error esta aquí
+      }
+      
+      const deletedUser = await Users.deleteOne({ _id: requestedUser._id }, { email: requestedUser.email });
+      
+      if (deletedUser.deletedCount === 0) {
+        return resp.status(404).json({ message: "El usuario solicitado no existe" });
+      }
+      
+      resp.status(200).json({ message: "Usuario eliminado correctamente" });
+      await client.close();
+    } catch (error) {
+      next(error);
+    }
+
   });
 
   initAdminUser(app, next);
