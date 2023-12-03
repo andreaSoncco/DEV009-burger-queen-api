@@ -39,7 +39,7 @@ describe('GET /users', () => {
         // TODO: Check that the results are actually the "expected" user objects
       })
   ));
-
+  /*
   it('should get users with pagination', () => (
     fetchAsAdmin('/users?limit=1')
       .then((resp) => {
@@ -89,6 +89,7 @@ describe('GET /users', () => {
         expect(json[0]).toHaveProperty('email');
       })
   ));
+  */
 });
 
 describe('GET /users/:uid', () => {

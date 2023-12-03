@@ -12,13 +12,14 @@ const {
 } = require('../controller/users');
 
 const initAdminUser = async (app, next) => {
-  const { adminEmail, adminPassword } = app.get('config');
+  const { id, adminEmail, adminPassword } = app.get('config');
   
-  if (!adminEmail || !adminPassword) {
+  if (!id || !adminEmail || !adminPassword) {
     return next();
   }
 
   const adminUser = {
+    id: id,
     email: adminEmail,
     password: bcrypt.hashSync(adminPassword, 10),
     roles: { admin: true },

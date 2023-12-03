@@ -3,3 +3,4 @@ exports.dbUrl = process.env.MONGO_URL || process.env.DB_URL || 'mongodb+srv://da
 exports.secret = process.env.JWT_SECRET || 'esta-es-la-api-burger-queen';
 exports.adminEmail = process.env.ADMIN_EMAIL || 'andrea.soncco.c@gmail.com';
 exports.adminPassword = process.env.ADMIN_PASSWORD || 'ElijoSerFeliz27';
+exports.id = process.env.ID || 1;
