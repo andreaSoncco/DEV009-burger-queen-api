@@ -12,11 +12,12 @@ POST  http://localhost:8080/auth
 Content-Type: application/json
 
 {
-  "email": "example@email.com",
-  "password": "yourpassword"
+  "email": "andrea.soncco.c@gmail.com",
+  "password": "ElijoSerFeliz27",
+  "roles": {"admin": true}
 }
 
-###
+### Usuario admin
 
 POST  http://localhost:8080/auth
 Content-Type: application/json
@@ -26,24 +27,155 @@ Content-Type: application/json
   "password": "ElijoSerFeliz27"
 }
 
+### Usuario no admin
+
+POST  http://localhost:8080/auth
+Content-Type: application/json
+
+{
+  "email": "celsonca@gmail.com",
+  "password": "navidad1727"
+}
+
+### Mostrar lista de usuarios si el usuario es Administrador
+
+GET http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTM5MDUxLCJleHAiOjE2OTk2MjU0NTF9.WZEUDBxQLbK13tD1MRp73wDXClP07HU4net8qQzbQPg
+
+
+### Mostrar lista de usuarios si el usuario no es Administrador
+
+GET http://localhost:8080/users
+headers:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFjYWFjMjY2YmM4MTM2MjZhYmMwZiIsInJvbGVzIjp7ImFkbWluIjpmYWxzZX0sImlhdCI6MTY5OTUzOTA4MCwiZXhwIjoxNjk5NjI1NDgwfQ.X_cDOh0oTD6zXMfJXaEgpysOcF9HSDWgT_2m2VmblSs
+
 ###
 
 GET http://localhost:8080/users
 headers:
-authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzA0OWRkZDM1Y2VlNTAyMTM0ZDdlOSIsImlhdCI6MTY5ODcyNzU2MH0.kIedTb9sn0zp4Ld17CtEyFd6vDJZnOGtdJNN49kt6M0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NDc3MDMyLCJleHAiOjE2OTk1NjM0MzJ9.JWAdyfICSVLr654Jj5sL87LHjxV2S7gRJgterDDLNU0
 
-###
-
+### Crear un NUEVO USUARIO como administrador
 
 POST http://localhost:8080/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzA0OWRkZDM1Y2VlNTAyMTM0ZDdlOSIsImlhdCI6MTY5ODcyOTUyOH0.WIPUqmPZcj6CbHpehiapRZNTEmULtzdRrgRA9Xqh2s8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
 Content-Type: application/json
 
 {
-  "email": "nuevo_usuario@example.com",
-  "password": "nueva_contraseña_segura",
-  "role": "admin"
+  "email": "daleska828@gmail.com",
+  "password": "queridalaA7",
+  "roles": { "admin": false }
 }
+
+### Crear un NUEVO USUARIO como administrador
+
+POST http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
+Content-Type: application/json
+
+{
+  "email": "celsonca@gmail.com",
+  "password": "nose8nose",
+  "roles": { "admin": true }
+}
+
+### Crear un NUEVO USUARIO como administrador
+
+POST http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTc0NTk2LCJleHAiOjE2OTk2NjA5OTZ9.DDwVY-tPnidk5GPpZNgtvH-Z-K5H_A00j20QruUmoDU
+Content-Type: application/json
+
+{
+  "email": "zandra.cisneros.calle@gmail.com",
+  "password": "lokillaMumy7",
+  "roles": { "admin": true }
+}
+
+
+#### Obtener usuario por el Parametro (correo) de Ruta si el usuario es administrador
+
+GET http://localhost:8080/users/daleska828%40gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTQ0ODc2LCJleHAiOjE2OTk2MzEyNzZ9.E9BUdjCcvSNDk7fZYwzEy26sDYmXLLA7EipA96t11UM
+
+#### Obtener usuario por el Parametro (correo) de Ruta si el usuario NO es administrador
+
+GET http://localhost:8080/users/daleska828%40gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
+
+### Obtener usuario por el Parametro de Ruta (_id) si el usuario es administrador
+GET http://localhost:8080/users/6529bd260fc8b1cd54025be9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTQ0ODc2LCJleHAiOjE2OTk2MzEyNzZ9.E9BUdjCcvSNDk7fZYwzEy26sDYmXLLA7EipA96t11UM
+
+### Obtener usuario por el Parametro de Ruta (_id) si el usuario NO es administrador
+GET http://localhost:8080/users/6529bd260fc8b1cd54025be9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
+
+
+
+#### Reemplazar usuario por el Parametro (correo) de Ruta si el usuario es administrador
+
+PUT  http://localhost:8080/users/celsonca%40gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ3OGEyZTIzYThlYmQ2ZmZmN2QzNSIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTc2MTA1LCJleHAiOjE2OTk2NjI1MDV9.f7tje66EEv5h8jDPWOXGiTBl3HAF2hDtCN8XS_6Bz3Y
+Content-Type: application/json
+
+{
+  "email": "celsonca@gmail.com",
+  "password": "navidad1727",
+  "roles": {
+    "admin": true,
+    "waiter": true 
+  }
+}
+#### Reemplazar usuario por el Parametro (correo) de Ruta si el usuario NO es administrador
+
+PUT http://localhost:8080/users/daleska828%40gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
+Content-Type: application/json
+
+{
+  "email": "andrea.soncco.c@gmail.com",
+  "password": "Actuarsobrelamarcha7",
+  "roles": {
+    "admin": true,
+    "waiter": false
+  }
+}
+
+### Reemplazar usuario por el Parametro de Ruta (_id) si el usuario es administrador
+PUT http://localhost:8080/users/6529bd260fc8b1cd54025be9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5NTQ0ODc2LCJleHAiOjE2OTk2MzEyNzZ9.E9BUdjCcvSNDk7fZYwzEy26sDYmXLLA7EipA96t11UM
+Content-Type: application/json
+
+{
+  "email": "andrea.soncco.c@gmail.com",
+  "password": "Actuarsobrelamarcha7",
+  "roles": {
+    "admin": true,
+    "waiter": false
+  }
+}
+
+### Reemplazar usuario por el Parametro de Ruta (_id) si el usuario NO es administrador
+PUT http://localhost:8080/users/6529bd260fc8b1cd54025be9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGFiNDRhM2NlNzc4ZTljZjk5ZDc2MiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNjk5Mzk0NzA5LCJleHAiOjE2OTk0ODExMDl9.vMdeZuo3wrWq-yTNqsGI4WCutYer1_LMkkdWY4Ygd7A
+Content-Type: application/json
+
+{
+  "email": "andrea.soncco.c@gmail.com",
+  "password": "Actuarsobrelamarcha7",
+  "roles": {
+    "admin": true,
+    "waiter": false
+  }
+}
+
+### Eliminar usuario por el Parametro de Ruta (_id) si el usuario es administrador
+DELETE  http://localhost:8080/users/65600529b5e2d51406a73af4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
+
+### Eliminar usuario por el Parametro de Ruta (_id) si el usuario NO es administrador
+DELETE  http://localhost:8080/users/654d78a2e23a8ebd6fff7d35
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ3OGEyZTIzYThlYmQ2ZmZmN2QzNSIsInJvbGVzIjp7ImFkbWluIjpmYWxzZSwid2FpdGVyIjp0cnVlfSwiaWF0IjoxNzAwNzczNTg5LCJleHAiOjE3MDA4NTk5ODl9.nFx0lZrEqdkFyCBEgNFyNgqHpEsBkwZLzxYW8-ve68Q
 
 
 

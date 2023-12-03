@@ -1,6 +1,7 @@
 const {
   fetch,
-  fetchAsTestUser,
+  fetchAsTestUser1,
+  fetchAsTestUser2,
   fetchAsAdmin,
 } = process;
 
@@ -11,7 +12,7 @@ describe('POST /products', () => {
   ));
 
   it('should fail with 403 when not admin', () => (
-    fetchAsTestUser('/products', { method: 'POST' })
+    fetchAsTestUser1('/products', { method: 'POST' })
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
@@ -39,7 +40,7 @@ describe('POST /products', () => {
 
 describe('GET /products', () => {
   it('should get products with Auth', () => (
-    fetchAsTestUser('/products')
+    fetchAsTestUser1('/products')
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
@@ -57,12 +58,12 @@ describe('GET /products', () => {
 
 describe('GET /products/:productid', () => {
   it('should fail with 404 when not found', () => (
-    fetchAsTestUser('/products/notarealproduct')
+    fetchAsTestUser1('/products/notarealproduct')
       .then((resp) => expect(resp.status).toBe(404))
   ));
 
   it('should get product with Auth', () => (
-    fetchAsTestUser('/products')
+    fetchAsTestUser1('/products')
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
@@ -75,7 +76,7 @@ describe('GET /products/:productid', () => {
           expect(typeof product.name).toBe('string');
           expect(typeof product.price).toBe('number');
         });
-        return fetchAsTestUser(`/products/${json[0]._id}`)
+        return fetchAsTestUser1(`/products/${json[0]._id}`)
           .then((resp) => ({ resp, product: json[0] }));
       })
       .then(({ resp, product }) => {
@@ -103,7 +104,7 @@ describe('PUT /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsTestUser(`/products/${json._id}`, {
+      .then((json) => fetchAsTestUser1(`/products/${json._id}`, {
         method: 'PUT',
         body: { price: 20 },
       }))
@@ -170,7 +171,7 @@ describe('DELETE /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsTestUser(`/products/${json._id}`, { method: 'DELETE' }))
+      .then((json) => fetchAsTestUser1(`/products/${json._id}`, { method: 'DELETE' }))
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
