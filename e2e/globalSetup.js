@@ -110,7 +110,6 @@ const checkAdminCredentials = () => fetch('/auth', {
     if (resp.status !== 200) {
       throw new Error(`Error: Could not authenticate as admin user - response ${resp.status}`);
     }
-    console.log("_e2e.adminUserCredentials", __e2e.adminUserCredentials);
     return resp.json();
   })
   .then(({ token }) => Object.assign(__e2e, { adminToken: token }));

@@ -1,3 +1,5 @@
+const { json } = require("body-parser");
+
 const {
   fetch,
   fetchAsTestUser1,
@@ -24,16 +26,17 @@ describe('POST /products', () => {
   it('should create product as admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 5 },
+      body: { name: 'TestProduct', price: 5 },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json._id).toBe('string');
-        expect(typeof json.name).toBe('string');
-        expect(typeof json.price).toBe('number');
+        expect(typeof json.newProduct._id).toBe('string');
+        expect(typeof json.newProduct.name).toBe('string');
+        expect(typeof json.newProduct.price).toBe('number');
+        
       })
   ));
 });
@@ -98,7 +101,7 @@ describe('PUT /products/:productid', () => {
   it('should fail with 403 when not admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: { name: 'TestNewProduct', price: 10 },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -122,7 +125,7 @@ describe('PUT /products/:productid', () => {
   it('should fail with 400 when bad props', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: { name: 'TestOneProduct', price: 10 },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
