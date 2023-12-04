@@ -268,7 +268,7 @@ module.exports = (app, next) => {
         return resp.status(400).json({ message: "No se proporcionaron accesorios para actualizar" });
       }
   
-      if (!email || !password ) {
+      if (!email || !password) {
         return resp.status(400).json({ message: "Se requieren 'email' y 'password'" });
       }
      

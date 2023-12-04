@@ -67,12 +67,13 @@ module.exports = (app, nextMain) => {
     try {
       const { client, db } = await connect();
       const Products = db.collection('Products');
+      const productId = req.params.productId;
   
       let requestedProduct;
-      if (ObjectId.isValid(req.params.productId)) {
-        requestedProduct = await Products.findOne({ _id: new ObjectId(req.params.productId) });
+      if (ObjectId.isValid(productId)) {
+        requestedProduct = await Products.findOne({ _id: new ObjectId(productId) });
       } else {
-        requestedProduct = await Products.findOne({ name: req.params.productId });
+        requestedProduct = await Products.findOne({ id: productId });
       }
   
       if (!requestedProduct) {
@@ -179,11 +180,6 @@ module.exports = (app, nextMain) => {
    */
   app.put('/products/:productId', requireAuth, requireAdmin, async(req, resp, next) => {
     try {
-      const { id, name, price, image, type } = req.body;
-
-      if (typeof price !== 'number' || !Number.isInteger(price)) {
-        return resp.status(400).json({ message: 'El precio debe ser un número entero.' });
-      };     
 
       const { client, db } = await connect();
       const Products = db.collection('Products');
@@ -193,24 +189,26 @@ module.exports = (app, nextMain) => {
       if (ObjectId.isValid(productId)) {
         requestedProduct = await Products.findOne({ _id: new ObjectId(productId) });
       } else {
-        requestedProduct = await Products.findOne({ name: productId });
+        requestedProduct = await Products.findOne({ id: productId });
       }
-  
+
       if (!requestedProduct) {
         return resp.status(404).json({ message: "Producto no encontrado" });
       }
 
+      const { name, price, image, type } = req.body;
+
       if (Object.keys(req.body).length === 0) {
         return resp.status(400).json({ message: "No se proporcionaron accesorios para actualizar" });
       }
-  
-      if ( !id || !name || !price || !image || !type ) {
-        return resp.status(400).json({ message: "Se requiere el id, nombre o alguna propiedad para actualizar" });
-      }
+
+      if (typeof price !== 'number' || !Number.isInteger(price)) {
+        return resp.status(400).json({ message: 'El precio debe ser un número entero.' });
+      }; 
 
       const updatedProduct = await Products.findOneAndUpdate(
         { _id: requestedProduct._id },
-        { $set: { id, name, price, image, type } },
+        { $set: { name, price, image, type } },
         { returnDocument: 'after' }
       );
   
@@ -223,6 +221,7 @@ module.exports = (app, nextMain) => {
       next(error);
     }
   });
+
 
   /**
    * @name DELETE /products

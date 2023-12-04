@@ -3,7 +3,6 @@ const { json } = require("body-parser");
 const {
   fetch,
   fetchAsTestUser1,
-  fetchAsTestUser2,
   fetchAsAdmin,
 } = process;
 
@@ -107,7 +106,7 @@ describe('PUT /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsTestUser1(`/products/${json._id}`, {
+      .then((json) => fetchAsTestUser1(`/products/${json.newProduct._id}`, {
         method: 'PUT',
         body: { price: 20 },
       }))
@@ -131,7 +130,7 @@ describe('PUT /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json.newProduct._id}`, {
         method: 'PUT',
         body: { price: 'abc' },
       }))
@@ -141,13 +140,13 @@ describe('PUT /products/:productid', () => {
   it('should update product as admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: { name: 'TestTwoProduct', price: 10 },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json.newProduct._id}`, {
         method: 'PUT',
         body: { price: 20 },
       }))
@@ -168,13 +167,13 @@ describe('DELETE /products/:productid', () => {
   it('should fail with 403 when not admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: { name: 'Testito', price: 10 },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsTestUser1(`/products/${json._id}`, { method: 'DELETE' }))
+      .then((json) => fetchAsTestUser1(`/products/${json.newProduct._id}`, { method: 'DELETE' }))
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
@@ -186,15 +185,18 @@ describe('DELETE /products/:productid', () => {
   it('should delete other product as admin', () => (
     fetchAsAdmin('/products', {
       method: 'POST',
-      body: { name: 'Test', price: 10 },
+      body: { name: 'TestTreeProduct', price: 10 },
     })
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
       .then(
-        ({ _id }) => fetchAsAdmin(`/products/${_id}`, { method: 'DELETE' })
-          .then((resp) => ({ resp, _id })),
+        ({ newProduct }) => fetchAsAdmin(`/products/${newProduct._id}`, { method: 'DELETE' })
+          .then((resp) => {
+            const _id = newProduct._id;
+            return { resp, _id };
+          }),
       )
       .then(({ resp, _id }) => {
         expect(resp.status).toBe(200);
