@@ -347,7 +347,7 @@ Reflexiona y luego marca los objetivos que has llegado a entender y aplicar en t
 ## 4. Consideraciones generales
 
 Este proyecto se realizará en duplas y podrá integrarse con el proyecto
-[Burger Queen API client](../04-burger-queen-api-client)
+[Burger Queen API Client](../04-burger-queen-api-Client)
 que desarrolle simultáneamente el equipo de Frontend developers de tu squad.
 
 La lógica del proyecto debe estar implementada completamente en JavaScript.

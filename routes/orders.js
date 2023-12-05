@@ -1,3 +1,6 @@
+const { ObjectId } = require('mongodb');
+const { connect } = require('../connect.js');
+
 const {
   requireAuth,
 } = require('../middleware/auth');
@@ -19,7 +22,7 @@ module.exports = (app, nextMain) => {
    * @response {Array} orders
    * @response {String} orders[]._id Id
    * @response {String} orders[].userId Id usuaria que creó la orden
-   * @response {String} orders[].client Clienta para quien se creó la orden
+   * @response {String} orders[].Client Clienta para quien se creó la orden
    * @response {Array} orders[].products Productos
    * @response {Object} orders[].products[] Producto
    * @response {Number} orders[].products[].qty Cantidad
@@ -30,7 +33,19 @@ module.exports = (app, nextMain) => {
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    */
-  app.get('/orders', requireAuth, (req, resp, next) => {
+  app.get('/orders', requireAuth, async(req, resp, next) => {
+    try {
+      const { Client, db } = await connect();
+      const Orders = db.collection('Orders');
+
+      // Buscar todas las ordenes en la colección
+      const orders = await Orders.find({}).toArray();
+      await Client.close();
+
+      resp.json(orders); // Enviar la lista de ordenes como respuesta
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
@@ -42,7 +57,7 @@ module.exports = (app, nextMain) => {
    * @response {Object} order
    * @response {String} order._id Id
    * @response {String} order.userId Id usuaria que creó la orden
-   * @response {String} order.client Clienta para quien se creó la orden
+   * @response {String} order.Client Clienta para quien se creó la orden
    * @response {Array} order.products Productos
    * @response {Object} order.products[] Producto
    * @response {Number} order.products[].qty Cantidad
@@ -54,7 +69,28 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si la orden con `orderId` indicado no existe
    */
-  app.get('/orders/:orderId', requireAuth, (req, resp, next) => {
+  app.get('/orders/:orderId', requireAuth, async(req, resp, next) => {
+    try {
+      const { Client, db } = await connect();
+      const Orders = db.collection('Orders');
+      const orderId = req.params.orderId;
+  
+      let requestedOrder;
+      if (ObjectId.isValid(orderId)) {
+        requestedOrder = await Orders.findOne({ _id: new ObjectId(orderId) });
+      } else {
+        requestedOrder = await Orders.findOne({ id: orderId });
+      }
+  
+      if (!requestedOrder) {
+        return resp.status(404).json({ message: "Orden no encontrada" });
+      }
+  
+      resp.json(requestedOrder);
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
@@ -63,7 +99,7 @@ module.exports = (app, nextMain) => {
    * @path {POST} /orders
    * @auth Requiere `token` de autenticación
    * @body {String} userId Id usuaria que creó la orden
-   * @body {String} client Clienta para quien se creó la orden
+   * @body {String} Client Clienta para quien se creó la orden
    * @body {Array} products Productos
    * @body {Object} products[] Producto
    * @body {String} products[].productId Id de un producto
@@ -71,7 +107,7 @@ module.exports = (app, nextMain) => {
    * @response {Object} order
    * @response {String} order._id Id
    * @response {String} order.userId Id usuaria que creó la orden
-   * @response {String} order.client Clienta para quien se creó la orden
+   * @response {String} order.Client Clienta para quien se creó la orden
    * @response {Array} order.products Productos
    * @response {Object} order.products[] Producto
    * @response {Number} order.products[].qty Cantidad
@@ -83,7 +119,42 @@ module.exports = (app, nextMain) => {
    * @code {400} no se indica `userId` o se intenta crear una orden sin productos
    * @code {401} si no hay cabecera de autenticación
    */
-  app.post('/orders', requireAuth, (req, resp, next) => {
+  app.post('/orders', requireAuth, async(req, resp, next) => {
+    try {
+      const { userId, client, products } = req.body;
+
+      // Verificar que se proporcionen nombre del producto y precio
+      if (!userId || !client || !products) {
+        return resp.status(400).json({ message: 'Se requiere el nombre del usuario que registra la orden, nombre del cliente y la lista de productos.' });
+      };
+
+      let fechaHoraActual = new Date();
+      let fechaHoraFormateada = fechaHoraActual.toLocaleString('es-ES', { timeZone: 'UTC' });
+
+      const newOrder = {
+        userId: userId, 
+        client: client,
+        products: products,
+        status: 'pending',
+        dateEntry: fechaHoraFormateada 
+      };
+  
+      const { Client, db } = await connect();
+      const ordersCollection = db.collection('Orders');
+    
+      // Si el producto no existe, crear un nuevo producto
+      const result = await ordersCollection.insertOne(newOrder);
+
+      if (result.acknowledged) {
+        resp.status(200).json( newOrder );
+      } else {
+        resp.status(500).json({ message: 'No se pudo crear la orden.' });
+      }
+        
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
@@ -93,7 +164,7 @@ module.exports = (app, nextMain) => {
    * @params {String} :orderId `id` de la orden
    * @auth Requiere `token` de autenticación
    * @body {String} [userId] Id usuaria que creó la orden
-   * @body {String} [client] Clienta para quien se creó la orden
+   * @body {String} [Client] Clienta para quien se creó la orden
    * @body {Array} [products] Productos
    * @body {Object} products[] Producto
    * @body {String} products[].productId Id de un producto
@@ -114,7 +185,46 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si la orderId con `orderId` indicado no existe
    */
-  app.put('/orders/:orderId', requireAuth, (req, resp, next) => {
+  app.put('/orders/:orderId', requireAuth, async(req, resp, next) => {
+    try {
+
+      const { Client, db } = await connect();
+      const Orders = db.collection('Orders');
+      const orderId = req.params.orderId;
+  
+      let requestedOrder;
+      if (ObjectId.isValid(orderId)) {
+        requestedOrder = await Orders.findOne({ _id: new ObjectId(orderId) });
+      } 
+
+      if (!requestedOrder) {
+        return resp.status(404).json({ message: "Orden no encontrada" });
+      }
+
+      const { userId, client, products, status } = req.body;
+
+      if (status !== 'pending' || status !== 'canceled' || status !== 'delivering' || status !== 'delivered') {
+        return resp.status(400).json({ message: "Incorrecto Estado de la Orden" });
+      }      
+
+      if (Object.keys(req.body).length === 0) {
+        return resp.status(400).json({ message: "No se proporcionaron accesorios para actualizar la orden" });
+      }
+
+      const updatedOrder = await Orders.findOneAndUpdate(
+        { _id: requestedOrder._id },
+        { $set: { userId, client, products } },
+        { returnDocument: 'after' }
+      );
+  
+      if (!updatedOrder.value) {
+        return resp.status(404).json({ message: "La orden a cambiar no existe" });
+      }
+      resp.status(200).json(updatedOrder.value);
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
@@ -126,7 +236,7 @@ module.exports = (app, nextMain) => {
    * @response {Object} order
    * @response {String} order._id Id
    * @response {String} order.userId Id usuaria que creó la orden
-   * @response {String} order.client Clienta para quien se creó la orden
+   * @response {String} order.Client Clienta para quien se creó la orden
    * @response {Array} order.products Productos
    * @response {Object} order.products[] Producto
    * @response {Number} order.products[].qty Cantidad
@@ -138,7 +248,33 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `orderId` indicado no existe
    */
-  app.delete('/orders/:orderId', requireAuth, (req, resp, next) => {
+  app.delete('/orders/:orderId', requireAuth, async(req, resp, next) => {
+    try {
+      const { Client, db } = await connect();
+      const Orders = db.collection('Orders');
+      const orderId = req.params.orderId;
+        
+      let requestedOrder;
+      if (ObjectId.isValid(orderId)) {
+        requestedOrder = await Orders.findOne({ _id: new ObjectId(orderId) });
+      }
+      
+      if (!requestedOrder) {
+        return resp.status(404).json({ message: "Orden no encontrada" });
+      }
+      
+      const deletedOrder = await Orders.deleteOne({ _id: requestedOrder._id });
+      
+      if (deletedOrder.deletedCount === 0) {
+        return resp.status(404).json({ message: "La orden a borrar no existe" });
+      }
+      
+      resp.status(200).json({ message: "Orden eliminada correctamente" });
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
+
   });
 
   nextMain();

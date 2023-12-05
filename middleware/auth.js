@@ -22,7 +22,7 @@ module.exports = (secret) => async (req, resp, next) => {
     }
 
     // TODO: Verificar identidad del usuario usando `decodedToken.id`
-    const { client, db } = await connect();
+    const { Client, db } = await connect();
     try {
       const Users = db.collection('Users');
       const user = await Users.findOne({ _id: new ObjectId(decodedToken.id) }, { projection: { password: 0 } });
@@ -36,7 +36,7 @@ module.exports = (secret) => async (req, resp, next) => {
     } catch (error) {
       next(error);
     } finally {
-      await client.close();
+      await Client.close();
     }
   });
 };

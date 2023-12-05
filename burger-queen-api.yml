@@ -723,7 +723,7 @@ components:
         userId:
           type: "string"
           description: "Id usuaria que creó la orden"
-        client:
+        Client:
           type: "string"
           description: "Clienta para quien se creó la orden"
         products:
@@ -863,7 +863,7 @@ components:
       value:
         - id: 2324
           userId: 15254
-          client: "Jude Milhon"
+          Client: "Jude Milhon"
           products:
             - qty: 1
               product:
@@ -885,7 +885,7 @@ components:
           dataEntry: "2022-03-05 15:00"
         - id: 8746
           userId: 15254
-          client: "Katie Bouman"
+          Client: "Katie Bouman"
           products:
             - qty: 2
               product:
@@ -909,7 +909,7 @@ components:
     NewOrder:
       value:
         userId: 15254
-        client: "Carol Shaw"
+        Client: "Carol Shaw"
         products:
           - qty: 5
             product:
@@ -923,7 +923,7 @@ components:
       value:
         id: 2324
         userId: 15254
-        client: "Jude Milhon"
+        Client: "Jude Milhon"
         products:
           - qty: 1
             product:
@@ -947,7 +947,7 @@ components:
       value:
         id: 8746
         userId: 15254
-        client: "Katie Bouman"
+        Client: "Katie Bouman"
         products:
           - qty: 2
             product:
@@ -972,7 +972,7 @@ components:
       value:
         id: 9541
         userId: 15254
-        client: "Carol Shaw"
+        Client: "Carol Shaw"
         products:
           - qty: 5
             product:

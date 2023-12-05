@@ -32,13 +32,13 @@ module.exports = (app, nextMain) => {
    */
   app.get('/products', requireAuth, async(req, resp, next) => {
       try {
-        const { client, db } = await connect();
+        const { Client, db } = await connect();
   
         const Products = db.collection('Products');
   
         // Buscar todos los usuarios en la colección
         const products = await Products.find({}).toArray();
-        await client.close();
+        await Client.close();
   
         resp.json(products); // Enviar la lista de usuarios como respuesta
       } catch (error) {
@@ -65,7 +65,7 @@ module.exports = (app, nextMain) => {
    */
   app.get('/products/:productId', requireAuth, async(req, resp, next) => {
     try {
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Products = db.collection('Products');
       const productId = req.params.productId;
   
@@ -81,7 +81,7 @@ module.exports = (app, nextMain) => {
       }
   
       resp.json(requestedProduct);
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }
@@ -130,7 +130,7 @@ module.exports = (app, nextMain) => {
         dateEntry: fechaHoraFormateada 
       };
   
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const productsCollection = db.collection('Products');
   
       // Verificar si el producto ya existe en la base de datos
@@ -144,12 +144,12 @@ module.exports = (app, nextMain) => {
       const result = await productsCollection.insertOne(newProduct);
 
       if (result.acknowledged) {
-        resp.status(200).json({ newProduct });
+        resp.status(200).json( newProduct );
       } else {
         resp.status(500).json({ message: 'No se pudo crear el producto.' });
       }
         
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }
@@ -181,7 +181,7 @@ module.exports = (app, nextMain) => {
   app.put('/products/:productId', requireAuth, requireAdmin, async(req, resp, next) => {
     try {
 
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Products = db.collection('Products');
       const productId = req.params.productId;
   
@@ -216,7 +216,7 @@ module.exports = (app, nextMain) => {
         return resp.status(404).json({ message: "El producto solicitado no existe" });
       }
       resp.status(200).json(updatedProduct.value);
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }
@@ -243,7 +243,7 @@ module.exports = (app, nextMain) => {
    */
   app.delete('/products/:productId', requireAuth, requireAdmin, async(req, resp, next) => {
     try {
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Products = db.collection('Products');
         
       let requestedProduct;
@@ -264,7 +264,7 @@ module.exports = (app, nextMain) => {
       }
       
       resp.status(200).json({ message: "Producto eliminado correctamente" });
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }

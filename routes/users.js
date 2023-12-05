@@ -26,7 +26,7 @@ const initAdminUser = async (app, next) => {
   };
 
   try {
-    const { client, db } = await connect();
+    const { Client, db } = await connect();
     const usersCollection = db.collection('Users');
 
     const existingAdminUser = await usersCollection.findOne({ email: adminEmail });
@@ -38,7 +38,7 @@ const initAdminUser = async (app, next) => {
       console.log('El usuario administrador ya existe en la base de datos.');
     }
 
-    await client.close();
+    await Client.close();
   } catch (error) {
     console.error('Error al conectar a la base de datos:', error);
   }
@@ -126,7 +126,7 @@ module.exports = (app, next) => {
   
   app.get('/users/:uid', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Users = db.collection('Users');
   
       let requestedUser;
@@ -141,7 +141,7 @@ module.exports = (app, next) => {
       }
   
       resp.json(requestedUser);
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }
@@ -196,7 +196,7 @@ module.exports = (app, next) => {
         roles: roles
       };
   
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const usersCollection = db.collection('Users');
   
       // Verificar si el usuario ya existe en la base de datos
@@ -210,13 +210,13 @@ module.exports = (app, next) => {
       const result = await usersCollection.insertOne(newUser);
 
       if (result.acknowledged) {
-        resp.status(200).json({ newUser });
+        resp.status(200).json( newUser );
       } else {
         resp.status(500).json({ message: 'No se pudo crear el usuario.' });
       }
       
   
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }
@@ -247,7 +247,7 @@ module.exports = (app, next) => {
 
   app.put('/users/:uid', requireAuth, requireAdmin, async (req, resp, next) => {
     try {
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Users = db.collection('Users');
       const uid = req.params.uid;
   
@@ -284,7 +284,7 @@ module.exports = (app, next) => {
         return resp.status(404).json({ message: "La usuaria solicitada no existe" });
       }
       resp.status(200).json(updatedUser.value);
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }
@@ -309,7 +309,7 @@ module.exports = (app, next) => {
   app.delete('/users/:uid', requireAuth, requireAdmin, async(req, resp, next) => {
 
     try {
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Users = db.collection('Users');
         
       let requestedUser;
@@ -330,7 +330,7 @@ module.exports = (app, next) => {
       }
       
       resp.status(200).json({ message: "Usuario eliminado correctamente" });
-      await client.close();
+      await Client.close();
     } catch (error) {
       next(error);
     }

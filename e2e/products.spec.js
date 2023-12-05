@@ -32,9 +32,9 @@ describe('POST /products', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json.newProduct._id).toBe('string');
-        expect(typeof json.newProduct.name).toBe('string');
-        expect(typeof json.newProduct.price).toBe('number');
+        expect(typeof json._id).toBe('string');
+        expect(typeof json.name).toBe('string');
+        expect(typeof json.price).toBe('number');
         
       })
   ));
@@ -106,7 +106,7 @@ describe('PUT /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsTestUser1(`/products/${json.newProduct._id}`, {
+      .then((json) => fetchAsTestUser1(`/products/${json._id}`, {
         method: 'PUT',
         body: { price: 20 },
       }))
@@ -130,7 +130,7 @@ describe('PUT /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json.newProduct._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
         method: 'PUT',
         body: { price: 'abc' },
       }))
@@ -146,7 +146,7 @@ describe('PUT /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsAdmin(`/products/${json.newProduct._id}`, {
+      .then((json) => fetchAsAdmin(`/products/${json._id}`, {
         method: 'PUT',
         body: { price: 20 },
       }))
@@ -173,7 +173,7 @@ describe('DELETE /products/:productid', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then((json) => fetchAsTestUser1(`/products/${json.newProduct._id}`, { method: 'DELETE' }))
+      .then((json) => fetchAsTestUser1(`/products/${json._id}`, { method: 'DELETE' }))
       .then((resp) => expect(resp.status).toBe(403))
   ));
 
@@ -192,9 +192,9 @@ describe('DELETE /products/:productid', () => {
         return resp.json();
       })
       .then(
-        ({ newProduct }) => fetchAsAdmin(`/products/${newProduct._id}`, { method: 'DELETE' })
+        ({ newProduct }) => fetchAsAdmin(`/products/${_id}`, { method: 'DELETE' })
           .then((resp) => {
-            const _id = newProduct._id;
+            const _id = _id;
             return { resp, _id };
           }),
       )

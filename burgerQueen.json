@@ -121,7 +121,7 @@
       {
         "id": 2324,
         "userId": 15254,
-        "client": "Jude Milton",
+        "Client": "Jude Milton",
         "products": [
           {
             "qty": 1,
@@ -152,7 +152,7 @@
       {
         "id": 8796,
         "userId": 15254,
-        "client": "Katie Bouman",
+        "Client": "Katie Bouman",
         "products": [
           {
             "qty": 2,
