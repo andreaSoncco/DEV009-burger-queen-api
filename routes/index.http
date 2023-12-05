@@ -177,7 +177,29 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiM
 DELETE  http://localhost:8080/users/654d78a2e23a8ebd6fff7d35
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ3OGEyZTIzYThlYmQ2ZmZmN2QzNSIsInJvbGVzIjp7ImFkbWluIjpmYWxzZSwid2FpdGVyIjp0cnVlfSwiaWF0IjoxNzAwNzczNTg5LCJleHAiOjE3MDA4NTk5ODl9.nFx0lZrEqdkFyCBEgNFyNgqHpEsBkwZLzxYW8-ve68Q
 
+### Crear un NUEVO PRODUCTO como administrador
 
+POST http://localhost:8080/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmJkNzhhYzcwZTBkOWMwODhiMDVkYyIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAxNTcxOTY2LCJleHAiOjE3MDE2NTgzNjZ9.3SNF6YwC9r5iGVDalw1rgJPJFe3u5XWM-kd1EF_jhAo
+Content-Type: application/json
+
+{
+  "name": "sandwich de jamón y queso",
+  "price": 10,
+  "type": "desayuno"
+}
+
+### Crear un NUEVO PRODUCTO como administrador
+
+POST http://localhost:8080/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NGQ2Y2ZiMGU1ZTliYjdkNjQxNmQ1ZCIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAwNzczMDkwLCJleHAiOjE3MDA4NTk0OTB9.WYCcLta5sYC3YSXkXUiWdHlGZmZA8FcYlVqyf3eLwAs
+Content-Type: application/json
+
+{
+  "name": "sandwich de jamón y queso",
+  "price": 10,
+  "type": "desayuno"
+}
 
 
 

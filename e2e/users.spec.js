@@ -166,11 +166,11 @@ describe('POST /users', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json.newUser._id).toBe('string');
-        expect(typeof json.newUser.email).toBe('string');
-        expect(typeof json.newUser.password).toBe('string');
-        expect(typeof json.newUser.roles).toBe('object');
-        expect(json.newUser.roles.admin).toBe(false);
+        expect(typeof json._id).toBe('string');
+        expect(typeof json.email).toBe('string');
+        expect(typeof json.password).toBe('string');
+        expect(typeof json.roles).toBe('object');
+        expect(json.roles.admin).toBe(false);
       })
   ));
 
@@ -188,11 +188,11 @@ describe('POST /users', () => {
         return resp.json();
       })
       .then((json) => {
-        expect(typeof json.newUser._id).toBe('string');
-        expect(typeof json.newUser.email).toBe('string');
-        expect(typeof json.newUser.password).toBe('string');
-        expect(typeof json.newUser.roles).toBe('object');
-        expect(json.newUser.roles.admin).toBe(true);
+        expect(typeof json._id).toBe('string');
+        expect(typeof json.email).toBe('string');
+        expect(typeof json.password).toBe('string');
+        expect(typeof json.roles).toBe('object');
+        expect(json.roles.admin).toBe(true);
       })
   ));
 

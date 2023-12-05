@@ -1,3 +1,6 @@
+const { ObjectId } = require('mongodb');
+const { connect } = require('../connect.js');
+
 const {
   requireAuth,
   requireAdmin,
@@ -27,7 +30,20 @@ module.exports = (app, nextMain) => {
    * @code {200} si la autenticación es correcta
    * @code {401} si no hay cabecera de autenticación
    */
-  app.get('/products', requireAuth, (req, resp, next) => {
+  app.get('/products', requireAuth, async(req, resp, next) => {
+      try {
+        const { Client, db } = await connect();
+  
+        const Products = db.collection('Products');
+  
+        // Buscar todos los usuarios en la colección
+        const products = await Products.find({}).toArray();
+        await Client.close();
+  
+        resp.json(products); // Enviar la lista de usuarios como respuesta
+      } catch (error) {
+        next(error);
+      }
   });
 
   /**
@@ -47,7 +63,28 @@ module.exports = (app, nextMain) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.get('/products/:productId', requireAuth, (req, resp, next) => {
+  app.get('/products/:productId', requireAuth, async(req, resp, next) => {
+    try {
+      const { Client, db } = await connect();
+      const Products = db.collection('Products');
+      const productId = req.params.productId;
+  
+      let requestedProduct;
+      if (ObjectId.isValid(productId)) {
+        requestedProduct = await Products.findOne({ _id: new ObjectId(productId) });
+      } else {
+        requestedProduct = await Products.findOne({ id: productId });
+      }
+  
+      if (!requestedProduct) {
+        return resp.status(404).json({ message: "Producto no encontrado" });
+      }
+  
+      resp.json(requestedProduct);
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
@@ -72,7 +109,50 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.post('/products', requireAdmin, (req, resp, next) => {
+  app.post('/products', requireAuth, requireAdmin, async(req, resp, next) => {
+    try {
+      const { id, name, price, image, type } = req.body;
+
+      // Verificar que se proporcionen nombre del producto y precio
+      if (!name || !price) {
+        return resp.status(400).json({ message: 'Se requieren nombre y precio para crear un producto.' });
+      };
+
+      let fechaHoraActual = new Date();
+      let fechaHoraFormateada = fechaHoraActual.toLocaleString('es-ES', { timeZone: 'UTC' });
+
+      const newProduct = {
+        id: id,
+        name: name,
+        price: price,
+        image: image,
+        type: type,
+        dateEntry: fechaHoraFormateada 
+      };
+  
+      const { Client, db } = await connect();
+      const productsCollection = db.collection('Products');
+  
+      // Verificar si el producto ya existe en la base de datos
+      const existingProduct = await productsCollection.findOne({ name });
+  
+      if (existingProduct) {
+        return resp.status(403).json({ message: 'El producto ya existe en la base de datos.' });
+      }
+  
+      // Si el producto no existe, crear un nuevo producto
+      const result = await productsCollection.insertOne(newProduct);
+
+      if (result.acknowledged) {
+        resp.status(200).json( newProduct );
+      } else {
+        resp.status(500).json({ message: 'No se pudo crear el producto.' });
+      }
+        
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
   });
 
   /**
@@ -98,8 +178,50 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.put('/products/:productId', requireAdmin, (req, resp, next) => {
+  app.put('/products/:productId', requireAuth, requireAdmin, async(req, resp, next) => {
+    try {
+
+      const { Client, db } = await connect();
+      const Products = db.collection('Products');
+      const productId = req.params.productId;
+  
+      let requestedProduct;
+      if (ObjectId.isValid(productId)) {
+        requestedProduct = await Products.findOne({ _id: new ObjectId(productId) });
+      } else {
+        requestedProduct = await Products.findOne({ id: productId });
+      }
+
+      if (!requestedProduct) {
+        return resp.status(404).json({ message: "Producto no encontrado" });
+      }
+
+      const { name, price, image, type } = req.body;
+
+      if (Object.keys(req.body).length === 0) {
+        return resp.status(400).json({ message: "No se proporcionaron accesorios para actualizar" });
+      }
+
+      if (typeof price !== 'number' || !Number.isInteger(price)) {
+        return resp.status(400).json({ message: 'El precio debe ser un número entero.' });
+      }; 
+
+      const updatedProduct = await Products.findOneAndUpdate(
+        { _id: requestedProduct._id },
+        { $set: { name, price, image, type } },
+        { returnDocument: 'after' }
+      );
+  
+      if (!updatedProduct.value) {
+        return resp.status(404).json({ message: "El producto solicitado no existe" });
+      }
+      resp.status(200).json(updatedProduct.value);
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
   });
+
 
   /**
    * @name DELETE /products
@@ -119,7 +241,34 @@ module.exports = (app, nextMain) => {
    * @code {403} si no es ni admin
    * @code {404} si el producto con `productId` indicado no existe
    */
-  app.delete('/products/:productId', requireAdmin, (req, resp, next) => {
+  app.delete('/products/:productId', requireAuth, requireAdmin, async(req, resp, next) => {
+    try {
+      const { Client, db } = await connect();
+      const Products = db.collection('Products');
+        
+      let requestedProduct;
+      if (ObjectId.isValid(req.params.productId)) {
+        requestedProduct = await Products.findOne({ _id: new ObjectId(req.params.productId) });
+      } else {
+        requestedProduct = await Products.findOne({ name: req.params.productId });
+      }
+      
+      if (!requestedProduct) {
+        return resp.status(404).json({ message: "Producto no encontrado" }); // El error esta aquí
+      }
+      
+      const deletedProduct = await Products.deleteOne({ _id: requestedProduct._id }, { name: requestedProduct.name });
+      
+      if (deletedProduct.deletedCount === 0) {
+        return resp.status(404).json({ message: "El producto solicitado no existe" });
+      }
+      
+      resp.status(200).json({ message: "Producto eliminado correctamente" });
+      await Client.close();
+    } catch (error) {
+      next(error);
+    }
+
   });
 
   nextMain();

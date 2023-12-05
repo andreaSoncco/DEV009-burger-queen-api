@@ -15,16 +15,15 @@ module.exports = (app, nextMain) => {
         return resp.status(400).json({ error: 'Email and password are required' });
       }
 
-      const { client, db } = await connect();
+      const { Client, db } = await connect();
       const Users = db.collection('Users');
       const userExist = await Users.findOne({ email: email });
-      await client.close(); // Asegúrate de cerrar la conexión a la base de datos
+      await Client.close(); // Asegúrate de cerrar la conexión a la base de datos
       if (!userExist) {
         return resp.status(404).json({ error: 'User not found' });
       }
 
       const isPasswordMatched = await bcrypt.compare(password, userExist.password);
-      console.log("las contraseñas coinciden?:", isPasswordMatched);
       if (!isPasswordMatched) {
         return resp.status(401).json({ error: 'Invalid credentials' });
       }
