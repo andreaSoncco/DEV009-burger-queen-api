@@ -203,20 +203,36 @@ module.exports = (app, nextMain) => {
 
       const { userId, client, products, status } = req.body;
 
-      if (status !== 'pending' || status !== 'canceled' || status !== 'delivering' || status !== 'delivered') {
-        return resp.status(400).json({ message: "Incorrecto Estado de la Orden" });
-      }      
+      const allowedStatus = ['pending', 'preparing', 'canceled', 'delivering', 'delivered'];
 
+      if (!allowedStatus.includes(status)) {
+        return resp.status(400).json({ message: "Incorrecto Estado de la Orden" });
+      }
+      
       if (Object.keys(req.body).length === 0) {
         return resp.status(400).json({ message: "No se proporcionaron accesorios para actualizar la orden" });
       }
 
+      let fechaHoraActual = new Date();
+      let fechaHoraFormateada = fechaHoraActual.toLocaleString('es-ES', { timeZone: 'UTC' });
+
+      const updateFields = {
+        userId,
+        client,
+        products,
+        status,
+      };
+  
+      if (status === 'delivered') {
+        updateFields.dateProcessed = fechaHoraFormateada;
+      }
+  
       const updatedOrder = await Orders.findOneAndUpdate(
         { _id: requestedOrder._id },
-        { $set: { userId, client, products } },
+        { $set: updateFields },
         { returnDocument: 'after' }
       );
-  
+ 
       if (!updatedOrder.value) {
         return resp.status(404).json({ message: "La orden a cambiar no existe" });
       }

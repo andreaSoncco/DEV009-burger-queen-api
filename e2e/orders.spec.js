@@ -48,7 +48,6 @@ describe('POST /orders', () => {
         return resp.json();
       })
       .then((json) => {
-        console.log("json", json.products);
         expect(typeof json._id).toBe('string');
         expect(json.client).toBe('Client');
         expect(typeof json.dateEntry).toBe('string');
@@ -376,9 +375,9 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Test11', price: 66 },
       }),
-      fetchAsTestUser1('/users/test@test.test'),
+      fetchAsAdmin('/users/test@test.test'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -387,7 +386,7 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser1('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: { products: [{ product: product, qty: 5 }], client: 'Client11', userId: user._id },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -411,9 +410,9 @@ describe('PUT /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 66 },
+        body: { name: 'Test12', price: 66 },
       }),
-      fetchAsTestUser1('/users/test@test.test'),
+      fetchAsAdmin('/users/test@test.test'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -422,7 +421,7 @@ describe('PUT /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser1('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: { products: [{ product: product, qty: 5 }], client: 'Client12', userId: user._id },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -461,9 +460,9 @@ describe('DELETE /orders/:orderId', () => {
     Promise.all([
       fetchAsAdmin('/products', {
         method: 'POST',
-        body: { name: 'Test', price: 25 },
+        body: { name: 'Test13', price: 25 },
       }),
-      fetchAsTestUser1('/users/test@test.test'),
+      fetchAsAdmin('/users/test@test.test'),
     ])
       .then((responses) => {
         expect(responses[0].status).toBe(200);
@@ -472,7 +471,7 @@ describe('DELETE /orders/:orderId', () => {
       })
       .then(([product, user]) => fetchAsTestUser1('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5 }], userId: user._id },
+        body: { products: [{ product: product, qty: 5 }], client: 'Client13', userId: user._id },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
