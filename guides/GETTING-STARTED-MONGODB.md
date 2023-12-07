@@ -90,12 +90,12 @@ usando el cliente elegido.
 const { MongoClient } = require('mongodb');
 const config = require("./config");
 
-const client = new MongoClient(config.dbUrl);
+const Client = new MongoClient(config.dbUrl);
 
 async function connect() {
   try {
-    await client.connect();
-    const db = client.db(<NOMBRE_DB>); // Reemplaza <NOMBRE_DB> por el nombre del db
+    await Client.connect();
+    const db = Client.db(<NOMBRE_DB>); // Reemplaza <NOMBRE_DB> por el nombre del db
     return db;
   } catch (error) {
     //
