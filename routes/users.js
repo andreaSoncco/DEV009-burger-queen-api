@@ -167,7 +167,7 @@ module.exports = (app, next) => {
    * @code {403} si ya existe usuaria con ese `email`
    */
 
-  app.post('/users', requireAuth, requireAdmin, async (req, resp, next) => {
+  app.post('/users', async (req, resp, next) => {
     try {
       const { id, email, password, roles } = req.body;
 
