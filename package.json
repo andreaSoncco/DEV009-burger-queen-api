@@ -14,8 +14,7 @@
     "test": "npm run test:e2e && npm run test:unit",
     "lint": "eslint .",
     "docs:generate": "jsdoc -c jsdoc.conf --readme README-docs.md",
-    "docs:deploy": "rm -rf docs && npm run docs:generate && gh-pages -d docs",
-    "build": "netlify deploy --prod"
+    "docs:deploy": "rm -rf docs && npm run docs:generate && gh-pages -d docs"
   },
   "dependencies": {
     "@shelf/jest-mongodb": "^4.1.7",
@@ -24,10 +23,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^5.9.0",
-    "mongodb-memory-server": "^8.12.2",
-    "netlify-cli": "^12.7.2",
-    "netlify-lambda": "^2.0.15",
-    "serveless-http": "^2.7.0"
+    "mongodb-memory-server": "^8.12.2"
   },
   "devDependencies": {
     "docdash": "^1.2.0",
