@@ -1,0 +1,1077 @@
+openapi: 3.0.3
+info:
+  title: Burger Queen API Node.js| Express
+  description: Esta REST API nos brinda un sistema a través del cual se pueden tomar pedidos usando una tablet, y enviarlos a la cocina para que se preparen ordenada y eficientemente.
+  version: 1.0.0
+servers:
+  - url: https://node-mongo-api-nine.vercel.app
+tags:
+  - name: auth
+    description: Operaciones de autenticación
+  - name: orders
+    description: Operaciones sobre ordenes
+  - name: products
+    description: Operaciones sobre productos
+  - name: users
+    description: Operaciones sobre usuarias
+paths:
+  /auth:
+    post:
+      tags:
+        - auth
+      summary: Crea token de autenticación
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyAuthPost'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se generó el token de autenticación.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessAuthPost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: Lista ordenes
+      parameters:
+      - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: (OK) Se listaron las ordenes.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessOrdersGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - orders
+      summary: Crea una orden
+      parameters:
+      - $ref: '#/components/parameters/token'
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyOrdersPost'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se creo una nueva orden.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessOrdersPost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /orders/{orderId}:
+    get:
+      tags:
+        - orders
+      summary: Obtiene los datos de una orden especifica
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/orderId'
+      responses:
+        '200':
+          description: (OK) Se mostro una orden especifica.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessOrderIdGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - orders
+      summary: Modifica una orden
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/orderId'
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyOrderIdPut'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se modifico una orden.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessOrderIdPut'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - orders
+      summary: Elimina una orden
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/orderId'
+      responses:
+        '200':
+          description: (OK) Se elimino una orden.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessOrderIdDelete'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /products:
+    get:
+      tags:
+        - products
+      summary: Lista productos
+      parameters:
+      - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: (OK) Se listo los productos
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/SucessProductsGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - products
+      summary: Crea un producto
+      parameters:
+      - $ref: '#/components/parameters/token'
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyProductsPost'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se creo un nuevo producto.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessProductsPost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /products/{productId}:
+    get:
+      tags:
+        - products
+      summary: Obtiene los datos de un producto especifico
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/productId'
+      responses:
+        '200':
+          description: (OK) Se mostro un producto especifico.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessProductIdGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - products
+      summary: Modifica un producto
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/productId'
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyProductIdPut'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se modifico un producto.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessProductIdPut'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - products
+      summary: Elimina un producto
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/productId'
+      responses:
+        '200':
+          description: (OK) Se elimino un producto.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessProductIdDelete'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /users:
+    get:
+      tags:
+        - users
+      summary: Lista usuarias
+      parameters:
+      - $ref: '#/components/parameters/token'
+      responses:
+        200:
+          description: (OK) Se listo las usuarias
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/SucessUsersGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - users
+      summary: Crea una usuaria
+      parameters:
+      - $ref: '#/components/parameters/token'
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyUsersPost'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se creo una nueva usuaria.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessUsersPost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /usesr/{userId}:
+    get:
+      tags:
+        - users
+      summary: Obtiene información de una usuaria
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: (OK) Se mostro una usuaria especifica.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessUserIdGet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - users
+      summary: Modifica una usuaria
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/userId'
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/BodyUserIdPut'
+        required: true
+      responses:
+        '200':
+          description: (OK) Se modifico una usuaria.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessUserIdPut'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - users
+      summary: Elimina una usuaria
+      parameters:
+      - $ref: '#/components/parameters/token'
+      - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: (OK) Se elimino una usuaria.
+          content:
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/SucessUserIdDelete'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Notfound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    BadRequest:
+      description: (BadRequest) Sin la información requerida no hay autorización para generar la operación.
+    Unauthorized:
+      description: (Unauthorized) Credenciales invalidas
+    Notfound:
+      description: (NotFound) Elemento no encontrado.
+    ServerError:
+      description: (ServerError) Error en el servidor.
+  parameters:
+    token:
+      in: header
+      name: token
+      description: token de autenticación
+      required: true
+      schema: 
+        type: string
+    orderId: 
+      name: orderId
+      in: path
+      description: Identificador de la orden a obtener
+      required: true
+      schema:
+        type: string
+    productId: 
+      name: productId
+      in: path
+      description: Identificador del producto a obtener
+      required: true
+      schema:
+        type: string
+    userId: 
+      name: userId
+      in: path
+      description: Identificador del usuario a obtener
+      required: true
+      schema:
+        type: string
+  schemas:
+    BodyAuthPost: 
+      type: object
+      properties: 
+        email: 
+          type: string
+          description: andrea.soncco.c@gmail.com
+        password: 
+          type: string
+          description: ElijoSerFeliz27
+    BodyOrdersPost:
+      type: object
+      properties:
+        userId:
+          type: integer  # Asumiendo que userId es un número entero
+          example: 4
+        client:
+          type: string
+          example: Katie Bouman
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              qty:
+                type: integer  # Asumiendo que qty es un número entero
+                example: 1
+              product:
+                type: object
+                properties:
+                  id:
+                    type: integer  # Asumiendo que id es un número entero
+                    example: 1331
+                  name:
+                    type: string
+                    example: café americano
+                  price:
+                    type: string  # Asumiendo que price es una cadena de texto
+                    example: '5'
+                  image:
+                    type: string
+                    format: uri  # Asumiendo que image es una URL
+                    example: https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg
+                  type:
+                    type: string
+                    example: almuerzo y cena
+    BodyOrderIdPut:
+      type: object
+      properties:
+        userId:
+          type: integer  # Asumiendo que userId es un número entero
+          example: 4
+        client:
+          type: string
+          example: Katie Bouman
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              qty:
+                type: integer  # Asumiendo que qty es un número entero
+                example: 1
+              product:
+                type: object
+                properties:
+                  id:
+                    type: integer  # Asumiendo que id es un número entero
+                    example: 1331
+                  name:
+                    type: string
+                    example: café americano
+                  price:
+                    type: string  # Asumiendo que price es una cadena de texto
+                    example: '5'
+                  image:
+                    type: string
+                    format: uri  # Asumiendo que image es una URL
+                    example: https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg
+                  type:
+                    type: string
+                    example: desayuno
+        status:
+          type: string
+          example: delivered
+    BodyProductsPost:
+      type: object
+      properties:
+        id:
+          type: integer  # Asumiendo que id es un número entero
+          example: 2352
+        name:
+          type: string
+          example: gaseosa 750ml
+        price:
+          type: number  # Asumiendo que price es un número
+          example: 10
+        image:
+          type: string
+          format: uri  # Asumiendo que image es una URL
+          example: https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg
+        type:
+          type: string
+          example: desayuno
+    BodyProductIdPut:
+      type: object
+      properties:
+        id:
+          type: integer  # Asumiendo que id es un número entero
+          example: 2352
+        name:
+          type: string
+          example: gaseosa 750ml
+        price:
+          type: number  # Asumiendo que price es un número
+          example: 10
+        image:
+          type: string
+          format: uri  # Asumiendo que image es una URL
+          example: https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg
+        type:
+          type: string
+          example: almuerzo y cena
+    BodyUsersPost:
+      type: object
+      properties:
+        id:
+          type: integer  # Asumiendo que id es un número entero
+          example: 2
+        email:
+          type: string
+          format: email  # Asumiendo que email es una dirección de correo electrónico
+          example: celso.soncco@gmail.com
+        password:
+          type: string
+          example: nose8nose
+        roles:
+          type: object
+          properties:
+            admin:
+              type: boolean
+              example: true
+    BodyUserIdPut:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email  # Asumiendo que email es una dirección de correo electrónico
+          example: celsonca@gmail.com
+        password:
+          type: string
+          example: navidad1727
+        roles:
+          type: object
+          properties:
+            admin:
+              type: boolean
+              example: true
+            waiter:
+              type: boolean
+              example: true
+    SucessAuthPost:
+      type: object
+      properties:
+        token:
+          type: string
+          enum: [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NzFmYjIxNGRhNTA0YWIyZjEyYjRkNiIsInJvbGVzIjp7ImFkbWluIjp0cnVlfSwiaWF0IjoxNzAyMzQ3Nzk5LCJleHAiOjE3MDI0MzQxOTl9.62Z9HEyvslgXaFNv_PLaajJn-ZY15ZAP2_cnBOREWis]
+          description: token de autenticación
+    SucessOrdersGet:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "6578762abeda854004f46a48"
+        userId:
+          type: integer
+          example: 4
+        client:
+          type: string
+          example: "Jude Milton"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              qty:
+                type: integer
+                example: 1
+              product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1111
+                  name:
+                    type: string
+                    example: "sandwich de jamón y queso"
+                  price:
+                    type: string
+                    example: "10"
+                  image:
+                    type: string
+                    example: "https://img.freepik.com/fotos-premium/sandwich-jamon-queso_105495-190.jpg"
+                  type:
+                    type: string
+                    example: "desayuno"
+        status:
+          type: string
+          example: "pending"
+        dateEntry:
+          type: string
+          format: date-time
+          example: "2023-12-12T15:03:04Z"
+      description: Ordenes registradas
+    SucessOrdersPost:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 4
+        client:
+          type: string
+          example: "Katie Bouman"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              qty:
+                type: integer
+                example: 1
+              product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1331
+                  name:
+                    type: string
+                    example: "café americano"
+                  price:
+                    type: string
+                    example: "5"
+                  image:
+                    type: string
+                    example: "https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg"
+                  type:
+                    type: string
+                    example: "almuerzo y cena"
+        status:
+          type: string
+          example: "pending"
+        dateEntry:
+          type: string
+          format: date-time
+          example: "2023-12-12T17:52:29Z"
+        _id:
+          type: string
+          example: "65789dde4b6f55427d06a2f8"
+      description: Orden registrada
+    SucessOrderIdGet:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "65789dde4b6f55427d06a2f8"
+        userId:
+          type: integer
+          example: 4
+        client:
+          type: string
+          example: "Katie Bouman"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              qty:
+                type: integer
+                example: 1
+              product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1331
+                  name:
+                    type: string
+                    example: "café americano"
+                  price:
+                    type: string
+                    example: "5"
+                  image:
+                    type: string
+                    example: "https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg"
+                  type:
+                    type: string
+                    example: "almuerzo y cena"
+        status:
+          type: string
+          example: "pending"
+        dateEntry:
+          type: string
+          example: "12/12/2023, 17:52:29"
+      description: Orden identificada
+    SucessOrderIdPut:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "65789dde4b6f55427d06a2f8"
+        userId:
+          type: integer
+          example: 4
+        client:
+          type: string
+          example: "Katie Bouman"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              qty:
+                type: integer
+                example: 1
+              product:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1331
+                  name:
+                    type: string
+                    example: "café americano"
+                  price:
+                    type: string
+                    example: "5"
+                  image:
+                    type: string
+                    example: "https://perfectdailygrind.com/wp-content/uploads/2020/08/Filter-or-Americano-2.jpg"
+                  type:
+                    type: string
+                    example: "desayuno"
+        status:
+          type: string
+          example: "delivered"
+        dateEntry:
+          type: string
+          example: "12/12/2023, 17:52:29"
+        dateProcessed:
+          type: string
+          example: "12/12/2023, 17:56:22"
+      description: Orden modificada
+    SucessOrderIdDelete:
+      type: object
+      properties:
+        message:
+          type: string
+          enum: [Orden eliminada correctamente]
+          description: Orden eliminada
+    SucessProductsGet:
+      type: object
+      properties:
+        product1:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "6578a05a4b6f55427d06a2f9"
+            id:
+              type: integer
+              example: 2352
+            name:
+              type: string
+              example: "gaseosa 750ml"
+            price:
+              type: integer
+              example: 10
+            image:
+              type: string
+              example: "https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg"
+            type:
+              type: string
+              example: "desayuno"
+            dateEntry:
+              type: string
+              format: date-time
+              example: "2023-12-12T18:03:05Z"
+        product2:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "65786c281a8295a1400b4d17"
+            id:
+              type: integer
+              example: 1111
+            name:
+              type: string
+              example: "sandwich de jamón y queso"
+            price:
+              type: integer
+              example: 10
+            image:
+              type: string
+              example: "https://img.freepik.com/fotos-premium/sandwich-jamon-queso_105495-190.jpg"
+            type:
+              type: string
+              example: "desayuno"
+            dateEntry:
+              type: string
+              format: date-time
+              example: "2023-12-12T14:20:23Z"
+      description: "Producto identificado"
+    SucessProductsPost:
+      type: object
+      properties:
+        product:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2352
+            name:
+              type: string
+              example: "gaseosa 750ml"
+            price:
+              type: integer
+              example: 10
+            image:
+              type: string
+              example: "https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg"
+            type:
+              type: string
+              example: "desayuno"
+            dateEntry:
+              type: string
+              format: date-time
+              example: "2023-12-12T18:03:05Z"
+            _id:
+              type: string
+              example: "6578a05a4b6f55427d06a2f9"
+      description: "Producto registrado"
+    SucessProductIdGet:
+      type: object
+      properties:
+        product:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "6578a05a4b6f55427d06a2f9"
+            id:
+              type: integer
+              example: 2352
+            name:
+              type: string
+              example: "gaseosa 750ml"
+            price:
+              type: integer
+              example: 10
+            image:
+              type: string
+              example: "https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg"
+            type:
+              type: string
+              example: "desayuno"
+            dateEntry:
+              type: string
+              format: date-time
+              example: "2023-12-12T18:03:05Z"
+      description: "Producto identificado"
+    SucessProductIdPut:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "6578a05a4b6f55427d06a2f9"
+        id:
+          type: integer
+          example: 2352
+        name:
+          type: string
+          example: "gaseosa 750ml"
+        price:
+          type: integer
+          example: 10
+        image:
+          type: string
+          example: "https://plazavea.vteximg.com.br/arquivos/ids/563349-512-512/20201608.jpg"
+        type:
+          type: string
+          example: "almuerzo y cena"
+        dateEntry:
+          type: string
+          format: date-time
+          example: "2023-12-12T18:03:05Z"
+      description: "Producto modificado"
+    SucessProductIdDelete:
+      type: object
+      properties:
+        message:
+          type: string
+          enum: [Producto eliminado correctamente]
+          description: Producto eliminado
+          
+          
+    SucessUsersGet:
+      type: object
+      properties:
+        user1:
+          type: object
+          properties:
+            _id: 
+              type: string
+              example: "6571fb214da504ab2f12b4d6"
+            id: 
+              type: integer
+              example: 1
+            email: 
+              type: string
+              example: andrea.soncco.c@gmail.com
+            password: 
+              type: string
+              example: $2b$10$PoTikNM1a3kjcV6ZHvFAnOau4kbNYoLe3JjtSmt6Zv0Tfj2nYLJB.
+            roles:
+              type: object
+              properties:
+                admin:
+                  type: boolean
+                  example: true
+        user2:
+          type: object
+          properties:
+            _id: 
+              type: string
+              example: "6571fb214da504ab2f12b4d6"
+            id: 
+              type: integer
+              example: 1
+            email: 
+              type: string
+              example: andrea.soncco.c@gmail.com
+            password: 
+              type: string
+              example: $2b$10$PoTikNM1a3kjcV6ZHvFAnOau4kbNYoLe3JjtSmt6Zv0Tfj2nYLJB.
+            roles:
+              type: object
+              properties:
+                admin:
+                  type: boolean
+                  example: true
+      description: Usuarias registradas
+    SucessUsersPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        email:
+          type: string
+          example: celso.soncco@gmail.com
+        password:
+          type: string
+          example: $2b$10$sVo.7nATbQo/YrFbwzcQwOSHBZiTLC6yIPDFNcUIGVUWXNpIt7YIq
+        roles:
+          type: object
+          properties:
+            admin:
+              type: boolean
+              example: true
+        _id:
+          type: string
+          example: "6578c8780ba46e8bf3d458a6"
+      description: "Usuario registrado"
+    SucessUserIdGet:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        email:
+          type: string
+          example: celso.soncco@gmail.com
+        password:
+          type: string
+          example: $2b$10$sVo.7nATbQo/YrFbwzcQwOSHBZiTLC6yIPDFNcUIGVUWXNpIt7YIq
+        roles:
+          type: object
+          properties:
+            admin:
+              type: boolean
+              example: true
+        _id:
+          type: string
+          example: "6578c8780ba46e8bf3d458a6"
+      description: "Usuario identificado"
+    SucessUserIdPut:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "6578c8780ba46e8bf3d458a6"
+        id:
+          type: integer
+          example: 2
+        email:
+          type: string
+          example: celsonca@gmail.com
+        password:
+          type: string
+          example: $2b$10$ppDEtlqYm.E1fPjqVW.L2ODs5UbjexM3kLz.6mnxMVVwKi79Wxf4K
+        roles:
+          type: object
+          properties:
+            admin:
+              type: boolean
+              example: true
+            waiter:
+              type: boolean
+              example: true
+      description: "Usuaria modificada"
+    SucessUserIdDelete:
+      type: object
+      properties:
+        message:
+          type: string
+          enum: [Usuario eliminado correctamente]
+          description: Usuaria eliminada
