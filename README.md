@@ -1,4 +1,4 @@
-# BURGER QUEEN API - 💻🗳 API REST, Node js & MongoDB Atlas, Express 🗃
+# BURGER QUEEN API - 💻🗳 API REST, Node js & MongoDB Atlas, Express 💚🗃
 
 Puedes revisar la documentación completa de la API en Swagger. Encuentra detalles sobre cada endpoint y cómo interactuar con los servicios en el siguiente enlace: [Ir a Swagger](https://app.swaggerhub.com/apis-docs/ANDREASONCCOC/BurgerQueenAPI/1.0.1)
 
