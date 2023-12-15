@@ -1,19 +1,18 @@
-# BURGER QUEEN API - 💻🗳 API REST, Node js & MongoDB Atlas, Express 💚🗃
+# BURGER QUEEN API - 🍔🍟 API REST, Node js & MongoDB Atlas, Express 💚🗳
 
 Puedes revisar la documentación completa de la API en Swagger. Encuentra detalles sobre cada endpoint y cómo interactuar con los servicios en el siguiente enlace: [Ir a Swagger](https://app.swaggerhub.com/apis-docs/ANDREASONCCOC/BurgerQueenAPI/1.0.1)
+
+Puedes acceder a la API mediante el siguiente enlace: [Ir a la API](https://node-mongo-api-nine.vercel.app/)
 
 ## Índice
 
 * [1. Preámbulo](#1-pre%C3%A1mbulo)
 * [2. Resumen del Proyecto](#2-resumen-del-proyecto)
-* [3. Conceptos tratados en el proyecto](#3-conceptos-tratados-en-el-proyecto)
-* [4. Instrucciones de Instalación y Uso](#4-instrucciones-de-instalación-y-uso)
-* [5. Proceso de Diseño y Desarrollo](#5-proceso-de-diseño-y-desarrollo)
-* [6. Herramientas de Elaboración](#6-herramientas-de-elaboración)
+* [3. Proceso de Diseño y Desarrollo](#5-proceso-de-diseño-y-desarrollo)
+* [5. Recursos del Proyecto](#6-herramientas-de-elaboración)
 
 ## 1. Preámbulo
 
-♟
 Un pequeño restaurante de hamburguesas, que está creciendo, necesita un
 sistema a través del cual se puedan tomar pedidos usando una _tablet_, y enviarlos
 a la cocina para que se preparen ordenada y eficientemente.
@@ -36,30 +35,21 @@ En su desarrollo se utilizó **JWT** (_JSON Web Tokens_) **con una cookie** para
 las cuentas de las usuarias y lograr la persistencia de datos de inicio de sesión y
 finalmente el despligue del servidor web se hizo en **Vercel**.
 
-## 3. CONCEPTOS TRATADOS EN EL PROYECTO
+## 3. PROCESO DE DISEÑO Y DESARROLLO.
 
-💫
-Stack **Node.js & Express**, **rutas** (_routes_), **URLs**, **HTTP** y **REST** (verbs, request, response,
-headers, body, status codes...), **JSON**, **JWT** (_JSON Web Tokens_),
-**conexión con una base datos** (`MongoDB`),
-**variables de entorno** y **deployment**
-
-## 5. PROCESO DE DISEÑO Y DESARROLLO.
-
-### 5.1. Planificación y Diseño. ✏️
+### 3.1. Planificación y Diseño. ✏️
 
 Para realizar el proyecto me organice utizando Github Project. De esta manera planifique mejor el tiempo y dividi el trabajo en metas por sprint usando `milestones` que contienen `issues` o tareas más pequeñas.Aplique metodología SCRUM de trabajo ágil.
 
 Una parte del diseño de la API además de establecer la arquitectura como servidor/cliente fue la definición de los esquemas de los modelos de datos, que consistio en
 describir de alguna forma la estructura de las colecciones que se uso y la forma de los objetos que se guardaron en dichas colecciones, para esto produje un esquema en excel donde reproduje la estructura de la base de datos teniendo en cuenta las 3 colecciones, sus elementos y respectivas propiedades.
 
-[Ir al Esquema de la Base de Datos en Excel](https://docs.google.com/spreadsheets/d/1xJTZ-URxEsTb0OmiZAnuGRv3paYv_zBpTgnSxhVerBw/edit?usp=sharing)
+[Ir al Esquema](https://docs.google.com/spreadsheets/d/1xJTZ-URxEsTb0OmiZAnuGRv3paYv_zBpTgnSxhVerBw/edit?usp=sharing)
 
 **Esquema Planeado para MongoDB**
 ![Hoja de Excel del Esquema](img/esquema.png)
-<img width="700" src="./img/esquema.png"><br>
 
-### 5.2. Desarrollo de la API.
+### 3.2. Desarrollo de la API.
 
 El desarrollo de la API tomo diez sprints y al cabo de cada uno tuve en cuenta el feedback recibido para hacer mejoras, a continuación pasaré a mostrar la imagen de mi tablero en Github Project donde guió el desarrollo en 3 hitos:
 
@@ -77,9 +67,14 @@ El desarrollo de la API tomo diez sprints y al cabo de cada uno tuve en cuenta e
 
 ![Cuadro de Milestones](img/Milestones.png)
 
-## 6. HERRAMIENTAS DE ELABORACIÓN
+## 4. RECURSOS EL PROYECTO
 
-👩‍🔧💻
+### 4.1. Conceptos Tratados 💫
+
+Stack **Node.js & Express**, **rutas** (_routes_), **URLs**, **HTTP** y **REST** (verbs, request, response, headers, body, status codes), **JSON**, **JWT** (_JSON Web Tokens_), **conexión con una base datos** (`MongoDB`), **variables de entorno** y **deployment**.
+
+### 4.2. Herramientas de Elaboración 👩‍🔧💻
+
 - JavaScript
 - Node.js: como entorno de programación de JavaScript con Módulo `path`
 - Express: como framework para crear el servidor y hacer uso de los métodos HTTP
