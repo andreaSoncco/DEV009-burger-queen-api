@@ -23,7 +23,10 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^5.9.0",
-    "mongodb-memory-server": "^8.12.2"
+    "mongodb-memory-server": "^8.12.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "docdash": "^1.2.0",

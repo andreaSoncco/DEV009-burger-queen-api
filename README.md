@@ -1,14 +1,15 @@
-# Burger Queen - API con Node.js
+# BURGER QUEEN API - 💻🗳 API REST, Node js & MongoDB Atlas, Express 🗃
+
+Para facilitar tu integración con el presente proyecto, te recomiendo revisar la documentación completa de la API en Swagger. Encuentra detalles sobre cada endpoint y cómo interactuar con los servicios en el siguiente enlace: [Ir a Swagger](https://app.swaggerhub.com/apis-docs/ANDREASONCCOC/BurgerQueenAPI/1.0.1)
 
 ## Índice
 
 * [1. Preámbulo](#1-pre%C3%A1mbulo)
 * [2. Resumen del proyecto](#2-resumen-del-proyecto)
-* [3. Objetivos de aprendizaje](#3-objetivos-de-aprendizaje)
-* [4. Consideraciones generales](#4-consideraciones-generales)
-* [5. Criterios de aceptación mínimos del proyecto](#5-criterios-de-aceptaci%C3%B3n-m%C3%ADnimos-del-proyecto)
-* [6. Hacker (Devops) Edition con Docker](#6-hacker-%28devops%29-edition-con-docker)
-* [7. Pistas, tips y lecturas complementarias](#7-pistas-tips-y-lecturas-complementarias)
+* [3. Documentación de la Interfaz de Programación de Aplicaciones API](#3-documentación-de-la-interfaz-de-programación-de-aplicaciones-api)
+* [4. Instrucciones de Instalación y Uso](#4-instrucciones-de-instalación-y-uso)
+* [5. Proceso de Diseño y Desarrollo](#5-proceso-de-diseño-y-desarrollo)
+* [6. Herramientas de Elaboración](#6-herramientas-de-elaboración)
 
 ## 1. Preámbulo
 
@@ -18,9 +19,8 @@ Un pequeño restaurante de hamburguesas, que está creciendo, necesita un
 sistema a través del cual puedan tomar pedidos usando una _tablet_, y enviarlos
 a la cocina para que se preparen ordenada y eficientemente.
 
-Este proyecto tiene dos áreas: interfaz web (cliente) y API (servidor). Nuestra
-clienta nos ha solicitado desarrollar la API que se puede integrar con la
-interfaz, que otro equipo de desarrolladoras está trabajando simultáneamente.
+Este servicio tiene dos áreas: interfaz web (cliente) y API (servidor), y el que
+aborda el presente proyecto es desarrollar la API.
 
 ## 2. Resumen del proyecto
 
@@ -66,475 +66,202 @@ headers, body, status codes...), **JSON**, **JWT** (_JSON Web Tokens_),
 **conexión con una base datos** (`MongoDB`),
 **variables de entorno**, **deployment**, etc.
 
-## 3. Objetivos de aprendizaje
+## 3. DOCUMENTACIÓN DE LA INTERFAZ DE PROGRAMACIÓN DE APLICACIONES API.
+
+  🗂
+  En este proyecto se decidió utilizar ES Modules con la síntaxis `import` / `export`, ya que
+  es una versión más actual y se necesito hacer algunos pasos adicionales de configuración
+  como instalar babel y modificar el package.json.
+
+  Para poder trabajar con las rutas y crear las funciones del código se hizo uso de los modulos
+  de Node.js como `fs` y `path`, usando principalmente `readFile` para leer archivos de forma
+  asíncrona y `readdirSync` para leer directorios de forma síncrona.
+
+  También se instalo y aplico el módulo de Axios para poder hacer las peticiones HTTP y generar
+  las validaciones gracias a las propiedades `status` y `statusText`
+
+  Al final del proyecto se testeo las funciones puras y la función general `mdLinks(path, validate)`
+  luego de instalar jest y aplicar el test Mock para el módulo de Axios.
+
+## 4. INSTRUCCIONES DE INSTALACIÓN Y USO.
+
+### 4.1. Instalación 👩🏽‍💻
+
+Esta librería está disponible de dos formas: como un módulo publicado
+en GitHub, que las usuarias pueden instalar e importar en otros proyectos, y como
+una interfaz de línea de comandos (CLI) que permitirá utilizar la librería directamente
+desde el terminal.
+
+Se puede instalar esta librería utilizando NPM (Node Package Manager), desde tu terminal puedes utilizar cualquiera de los siguientes comandos:
+
+- ```npm install andreaSoncco/DEV009-md-links```
+
+- ```npm install md-links andrea```
+
+### 4.2. Guía de Uso 📋💻
+
+#### 4.2.1. Obtener arreglo con propiedades de los links 🖇
+Al ejecutar el siguiente comando:
+
+  ```md-links ./firstDirectory```
+
+Se obtendrá un arreglo de objetos con las propiedades:
+
+* `href`: URL encontrada.
+* `text`: Texto que aparecía dentro del link (`<a>`).
+* `file`: Ruta del archivo donde se encontró el link.
+
+```shell
+[
+  {
+    href: 'https://es.wikipedia.org/wiki/Markdownu',
+    text: 'Markdown',
+    file: 'thirdFile.md'
+  },
+  {
+    href: 'https://curriculum.laboratoria.la/es/topics/javascript/03-functions/02-arrow',
+    text: 'Arrow Functions',
+    file: 'thirdFile.md'
+  },
+  {
+    href: 'https://curriculum.laboratoria.la/es/topics/javascript/03-functions/02-arrow',
+    text: 'Arrow Functions',
+    file: 'firstFile.text'
+  },
+  {
+    href: 'https://github.com/markedjs/marked',
+    text: 'marked',
+    file: 'SecondFile.markdown'
+  }
+]
+```
+#### 4.2.2. Obtener arreglo con propiedades y validaciones de los links 🖇✅
+Para esto se utiliza el argumento `--validate` y se ejecutar el siguiente comando:
+
+  `md-links ./firstDirectory --validate`
+
+Obtendremos un arreglo de objetos con las propiedades:
+
+* `href`: URL encontrada.
+* `text`: Texto que aparecía dentro del link (`<a>`).
+* `file`: Ruta del archivo donde se encontró el link.
+* `status`: Código de respuesta HTTP.
+* `ok`: Mensaje `fail` en caso de fallo de lo contrario `ok` en caso de éxito.
+
+```shell
+  [
+  {
+    href: 'https://curriculum.laboratoria.la/es/topics/javascript/03-functions/02-arrow',
+    text: 'Arrow Functions',
+    file: 'firstFile.text',
+    status: 200,
+    ok: 'ok'
+  },
+  {
+    href: 'https://es.wikipedia.org/wiki/Markdownu',
+    text: 'Markdown',
+    file: 'thirdFile.md',
+    status: 404,
+    ok: 'fail'
+  },
+  {
+    href: 'https://curriculum.laboratoria.la/es/topics/javascript/03-functions/02-arrow',
+    text: 'Arrow Functions',
+    file: 'thirdFile.md',
+    status: 200,
+    ok: 'ok'
+  },
+  {
+    href: 'https://github.com/markedjs/marked',
+    text: 'marked',
+    file: 'SecondFile.markdown',
+    status: 200,
+    ok: 'ok'
+  }
+]
 
-
-Reflexiona y luego marca los objetivos que has llegado a entender y aplicar en tu proyecto. Piensa en eso al decidir tu estrategia de trabajo.
-
-### Node.js
-
-- [ ] **Instalar y usar módulos con npm**
-
-  <details><summary>Links</summary><p>
-
-  * [Sitio oficial de npm (en inglés)](https://www.npmjs.com/)
-</p></details>
-
-- [ ] **Configuración de package.json**
-
-  <details><summary>Links</summary><p>
-
-  * [package.json - Documentación oficial (en inglés)](https://docs.npmjs.com/files/package.json)
-</p></details>
-
-- [ ] **Configuración de npm-scripts**
-
-  <details><summary>Links</summary><p>
-
-  * [scripts - Documentación oficial (en inglés)](https://docs.npmjs.com/misc/scripts)
-</p></details>
-
-### JavaScript
-
-- [ ] **Pruebas unitarias (unit tests)**
-
-  <details><summary>Links</summary><p>
-
-  * [Empezando con Jest - Documentación oficial](https://jestjs.io/docs/es-ES/getting-started)
-</p></details>
-
-- [ ] **Pruebas asíncronas**
-
-  <details><summary>Links</summary><p>
-
-  * [Tests de código asincrónico con Jest - Documentación oficial](https://jestjs.io/docs/es-ES/asynchronous)
-</p></details>
-
-- [ ] **Uso de mocks y espías**
-
-  <details><summary>Links</summary><p>
-
-  * [Manual Mocks con Jest - Documentación oficial](https://jestjs.io/docs/es-ES/manual-mocks)
-</p></details>
-
-- [ ] **Pruebas de integración (end-to-end)**
-
-- [ ] **Módulos de ECMAScript (ES Modules)**
-
-  <details><summary>Links</summary><p>
-
-  * [import - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Statements/import)
-  * [export - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Statements/export)
-</p></details>
-
-- [ ] **Módulos de CommonJS**
-
-  <details><summary>Links</summary><p>
-
-  * [Modules: CommonJS modules - Node.js Docs](https://nodejs.org/docs/latest/api/modules.html)
-</p></details>
-
-- [ ] **Uso de linter (ESLINT)**
-
-- [ ] **Uso de identificadores descriptivos (Nomenclatura y Semántica)**
-
-### Control de Versiones (Git y GitHub)
-
-- [ ] **Git: Instalación y configuración**
-
-- [ ] **Git: Control de versiones con git (init, clone, add, commit, status, push, pull, remote)**
-
-- [ ] **Git: Integración de cambios entre ramas (branch, checkout, fetch, merge, reset, rebase, tag)**
-
-- [ ] **GitHub: Creación de cuenta y repos, configuración de llaves SSH**
-
-- [ ] **GitHub: Despliegue con GitHub Pages**
-
-  <details><summary>Links</summary><p>
-
-  * [Sitio oficial de GitHub Pages](https://pages.github.com/)
-</p></details>
-
-- [ ] **GitHub: Colaboración en Github (branches | forks | pull requests | code review | tags)**
-
-- [ ] **GitHub: Organización en Github (projects | issues | labels | milestones | releases)**
-
-### Express.js
-
-- [ ] **Manejo de rutas**
-
-- [ ] **Uso y creación de middleware**
-
-### HTTP
-
-- [ ] **Consulta o petición (request) y respuesta (response).**
-
-  <details><summary>Links</summary><p>
-
-  * [Generalidades del protocolo HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Overview)
-  * [Mensajes HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Messages)
-</p></details>
-
-- [ ] **Cabeceras (headers)**
-
-  <details><summary>Links</summary><p>
-
-  * [HTTP headers - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Headers)
-</p></details>
-
-- [ ] **Cuerpo (body)**
-
-  <details><summary>Links</summary><p>
-
-  * [Cuerpo de Mensajes HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Messages#cuerpo)
-</p></details>
-
-- [ ] **Verbos HTTP**
-
-  <details><summary>Links</summary><p>
-
-  * [Métodos de petición HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Methods)
-</p></details>
-
-- [ ] **Códigos de status de HTTP**
-
-  <details><summary>Links</summary><p>
-
-  * [Códigos de estado de respuesta HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Status)
-  * [The Complete Guide to Status Codes for Meaningful ReST APIs - dev.to](https://dev.to/khaosdoctor/the-complete-guide-to-status-codes-for-meaningful-rest-apis-1-5c5)
-</p></details>
-
-- [ ] **Encodings y JSON**
-
-  <details><summary>Links</summary><p>
-
-  * [Introducción a JSON - Documentación oficial](https://www.json.org/json-es.html)
-</p></details>
-
-- [ ] **CORS (Cross-Origin Resource Sharing)**
-
-  <details><summary>Links</summary><p>
-
-  * [Control de acceso HTTP (CORS) - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/CORS)
-</p></details>
-
-### Autenticación
-
-- [ ] **JWT (JSON Web Token)**
-
-- [ ] **Almacenamiento y acceso de contraseñas**
-
-### WebOps
-
-- [ ] **Variables de entorno**
-
-- [ ] **Contenedores (Docker)**
-
-- [ ] **Docker compose**
-
-- [ ] **Cloud Functions**
-
-### MongoDB
-
-- [ ] **Operaciones CRUD (Create-Read-Update-Delete)**
-
-  <details><summary>Links</summary><p>
-
-  * [MongoDB CRUD Operations - Docs (en inglés)](https://docs.mongodb.com/manual/crud/)
-  * [Insert Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/insert-documents/)
-  * [Query Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/query-documents/)
-  * [Update Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/update-documents/)
-  * [Delete Documents - Docs (en inglés)](https://docs.mongodb.com/manual/tutorial/remove-documents/)
-</p></details>
-
-- [ ] **Modelos y esquemas de datos**
-
-  <details><summary>Links</summary><p>
-
-  * [Schema Validation - Docs (en inglés)](https://docs.mongodb.com/manual/core/schema-validation/)
-  * [Data Model Design - Docs (en inglés)](https://docs.mongodb.com/manual/core/data-model-design/)
-</p></details>
-
-- [ ] **Respaldo y restauración (backup/restore)**
-
-  <details><summary>Links</summary><p>
-
-  * [MongoDB Backup Methods - Docs (en inglés)](https://docs.mongodb.com/manual/core/backups/)
-</p></details>
-
-### PostgreSQL
-
-- [ ] **Cliente de terminal psql**
-
-  <details><summary>Links</summary><p>
-
-  * [psql - Docs (en inglés)](https://www.postgresql.org/docs/14/app-psql.html)
-</p></details>
-
-- [ ] **Tipos de datos**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 8. Data Types - Docs (en inglés)](https://www.postgresql.org/docs/14/datatype.html)
-</p></details>
-
-- [ ] **Respaldo y restauración (backup/restore)**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 26. Backup and Restore - Docs (en inglés)](https://www.postgresql.org/docs/14/backup.html)
-</p></details>
-
-### MySQL
-
-- [ ] **Cliente de terminal mysql**
-
-  <details><summary>Links</summary><p>
-
-  * [The MySQL Command-Line Client - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)
-</p></details>
-
-- [ ] **Tipos de datos**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 11 Data Types - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
-</p></details>
-
-- [ ] **Respaldo y restauración (backup/restore)**
-
-  <details><summary>Links</summary><p>
-
-  * [Chapter 7 Backup and Recovery - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/backup-and-recovery.html)
-  * [mysqldump — A Database Backup Program - Docs (en inglés)](https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html)
-</p></details>
-
-### Bases de datos
-
-- [ ] **Modelado de datos**
-
-- [ ] **Conexión**
-
-### SQL
-
-- [ ] **Creación y modificación de tablas**
-
-  <details><summary>Links</summary><p>
-
-  * [SQL CREATE TABLE Statement - w3schools (en inglés)](https://www.w3schools.com/sql/sql_create_table.asp)
-  * [CREATE TABLE Statement - PostgreSQL Docs (en inglés)](https://www.postgresql.org/docs/9.1/sql-createtable.html)
-  * [ALTER TABLE Statement - PostgreSQL Docs (en inglés)](https://www.postgresql.org/docs/9.1/sql-altertable.html)
-</p></details>
-
-- [ ] **Operaciones CRUD (Create-Read-Update-Delete)**
-
-  <details><summary>Links</summary><p>
-
-  * [INSERT](https://www.postgresql.org/docs/9.5/sql-insert.html)
-  * [SELECT](https://www.postgresql.org/docs/9.5/sql-select.html)
-  * [UPDATE](https://www.postgresql.org/docs/9.1/sql-update.html)
-  * [DELETE](https://www.postgresql.org/docs/8.1/sql-delete.html)
-</p></details>
-
-- [ ] **Borrado de tablas o bases de datos enteras con DROP**
-
-  <details><summary>Links</summary><p>
-
-  * [DROP TABLE](https://www.postgresql.org/docs/8.2/sql-droptable.html)
-  * [DROP DATABASE](https://www.postgresql.org/docs/8.2/sql-dropdatabase.html)
-</p></details>
-
-## 4. Consideraciones generales
-
-Este proyecto se realizará en duplas y podrá integrarse con el proyecto
-[Burger Queen API Client](../04-burger-queen-api-Client)
-que desarrolle simultáneamente el equipo de Frontend developers de tu squad.
-
-La lógica del proyecto debe estar implementada completamente en JavaScript.
-En este proyecto está permitido usar librerías o frameworks, asi como
-extensiones al lenguaje con `babel` (caso en el cual deberás incluir un
-comando `npm run build`).
-
-Los tests deben cubrir un mínimo del 90% de _statements_, _functions_,
-_lines_ y _branches_. Si bien el boilerplate no incluye la configuración para
-pruebas unitarias, estas son obligatorias.
-
-Otro requerimiento del equipo de QA de nuestra clienta es realizar
-**pruebas _end-to-end_**, que usaremos para verificar el comportamiento desde el
-punto de vista de HTTP, desde afuera del servidor. Estos tests, a diferencia de
-las pruebas unitarias, no prueban cada pieza por separado sino que prueban la
-aplicación completa, de principio a fin. Estas pruebas, al no hacer uso directo
-del código fuente de la aplicación, pueden ejecutarse directamente sobre una URL
-remota, ya que la interfaz sometida a pruebas es HTTP.
-
-El _boilerplate_ ya contiene el setup y configuración
-necesaria para ejecutar todos los tests _end-to-end_ con el comando `npm run test:e2e`.
-
-```sh
-# Corre pruebas e2e sobre instancia local. Esto levanta la aplicación con npm
-# start y corre los tests contra la URL de esta instancia (por defecto
-# http://127.0.0.1:8080).
-npm run test:e2e
-
-# Corre pruebas e2e sobre URL remota
-REMOTE_URL=<TODO: poner URL> npm run test:e2e
 ```
 
-Las pruebas _end-to-end_ ya están completas en el _boilerplate_, así que puedes
-usarlas como guía de implementación y checklist de completitud.
+#### 4.2.3. Obtener estadísticas de los Links 🧮
+Para esto se utiliza el argumento `--stats` y se ejecuta el siguiente comando:
 
-## 5. Criterios de aceptación mínimos del proyecto
+  `md-links ./firstDirectory --stats`
 
-### 5.1 API
-
-Según lo establecido por la
-[documentación](https://app.swaggerhub.com/apis-docs/ssinuco/BurgerQueenAPI/2.0.0)
-entregada por nuestra clienta, la API debe exponer los siguientes endpoints:
-
-#### 5.1.1 `/`
-
-* `GET /`
-
-#### 5.1.2 `/auth`
-
-* `POST /auth`
-
-#### 5.1.3 `/users`
-
-* `GET /users`
-* `GET /users/:uid`
-* `POST /users`
-* `PATCH /users/:uid`
-* `DELETE /users/:uid`
-
-#### 5.1.4 `/products`
-
-* `GET /products`
-* `GET /products/:productid`
-* `POST /products`
-* `PATCH /products/:productid`
-* `DELETE /products/:productid`
-
-#### 5.1.5 `/orders`
-
-* `GET /orders`
-* `GET /orders/:orderId`
-* `POST /orders`
-* `PATCH /orders/:orderId`
-* `DELETE /orders/:orderId`
-
-### 5.2 CLI
-
-La clienta nos ha solicitado que la aplicación cuente un comando **`npm start`**
-que se debe encargar de ejecutar nuestra aplicación node y que además pueda
-recibir información de configuración, como el puerto en el que escuchar, a qué
-base datos conectarse, etc. Estos datos de configuración serán distintos entre
-diferentes entornos (desarrollo, producción, etc.). El _boilerplate_ ya
-implementa [el código necesario](config.js) para leer esta información de los
-[argumentos de invocación](https://nodejs.org/docs/latest/api/process.html#process_process_argv)
-y el
-[entorno](https://nodejs.org/docs/latest/api/process.html#process_process_env).
-
-#### 5.2.1 Argumentos de línea de comando
-
-Podemos especificar el puerto en el que debe arrancar la aplicación pasando un
-argumento a la hora de invocar nuestro programa:
+Al utilizar esta opción, podrás obtener estadísticas relacionadas con los enlaces presentes en los archivos Markdown.
 
 ```sh
-# Arranca la aplicación el puerto 8888 usando npm
-npm start 8888
+Total: 4
+Unique: 3
 ```
 
-#### 5.2.2 Variables de entorno
+* Los `links Total` representan la cantidad total de enlaces encontrados en los archivos analizados. Cada enlace único se suma, incluso si aparece varias veces en diferentes archivos.
 
-Nuestra aplicación usa las siguientes variables de entorno:
+* Los `links Unique` muestran la cantidad de enlaces distintos presentes en los archivos Markdown. Si un mismo enlace aparece en varios archivos, solo se contará una vez en esta métrica.
 
-* `PORT`: Si no se ha especificado un puerto como argumento de línea de comando,
-  podemos usar la variable de entorno `PORT` para especificar el puerto. Valor
-  por defecto `8080`.
-* `DB_URL`: El _string_ de conexión de _MongoDB_. Cuando ejecutemos la
-  aplicación en nuestra computadora (en entorno de desarrollo), podemos usar el
-  una base de datos local, pero en producción deberemos utilizar las instancias
-  configuradas con `docker-compose` (mas sobre esto en la siguiente sección de
-  **Deployment**)
-* `JWT_SECRET`: Nuestra aplicación implementa autenticación usando JWT (JSON
-  Web Tokens). Para poder firmar (cifrar) y verificar (descifrar) los tokens,
-  nuestra aplicación necesita un secreto. En local puedes usar el valor por
-  defecto (`xxxxxxxx`), pero es muy importante que uses un _secreto_ de verdad
-  en producción.
-* `ADMIN_EMAIL`: Opcionalmente podemos especificar un email y password para
-  el usuario admin (root). Si estos detalles están presentes la aplicación se
-  asegurará que exista el usuario y que tenga permisos de administrador. Valor
-  por defecto `admin@localhost`.
-* `ADMIN_PASSWORD`: Si hemos especificado un `ADMIN_EMAIL`, debemos pasar
-  también una contraseña para el usuario admin. Valor por defecto: `changeme`.
+Utiliza esta opción para obtener una visión general de la cantidad total de enlaces y la diversidad de enlaces únicos en tus documentos Markdown.
 
-### 5.3 Despliegue (Deployment)
+#### 4.2.4. Obtener estadísticas y contar los links rotos ❌
+Para esto se utiliza el argumento `--validate` y `--stats`, se ejecuta el siguiente comando:
 
-Puedes elegir el proveedor (o proveedores) que prefieras junto
-con el mecanismo de despliegue y estrategia de alojamiento. Te recomendamos
-explorar las siguientes opciones:
+  `md-links ./firstDirectory --validate --stats`
 
-* [Vercel](https://vercel.com/) es una opción enfocada
-  a aplicaciones web estáticas (como las que se construyen con React). Sin embargo,
-  Vercel también nos permite desplegar aplicaciones node usando [Serverless
-  Functions](https://vercel.com/docs/serverless-functions/introduction).
-* [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-  es una muy buena opción para alojar nuestra base datos de producción, la cuál
-  podemos usar en conjunción con cualquiera de las opciones mencionadas arriba.
+También podemos combinar `--validate` y `--stats` para obtener estadísticas que necesiten de los resultados de la validación.
 
-Si tienes dudas sobre las diferentes (y múltiples) opciones de despliegue no
-dudes en consultar con tus pares y tus coaches.
+```sh
+Total: 4
+Unique: 3
+Broken: 1
+```
 
-### 6. Hacker (Devops) Edition con Docker
+* `Broken:` El número de enlaces que están rotos o que no devuelven un mensaje de ok
 
-Nuestra clienta nos ha manifestado que su equipo de _devops_ está siempre con
-muchas tareas, por lo que nos pide como requerimiento que la aplicación esté
-configurada con `docker-compose` para que pueda ser desplegada sin dificultades
-en cualquier entorno.
+## 5. PROCESO DE DISEÑO Y DESARROLLO.
 
-El _boilerplate_ ya cuenta con una configuración inicial de `docker-compose` para
-la aplicación de node, tu tarea será extender esa configuración para incluir
-la configuración de base de datos. Ten en cuenta que como vas a tener dos
-servidores corriendo sobre una misma configuración, deberás exponer
-los servicios en diferentes puertos.
+### 5.1. Planificación y Diseño. ✏️
 
-Lee la [**guía para docker**](./guides/GETTING-STARTED-DOCKER.md)
-incluido en el proyecto para mas información.
+Para realizar el proyecto me organice utizando Github Project. De esta manera planifique mejor el tiempo y dividi el trabajo en metas por sprint usando `milestones` que contienen `issues` o tareas más pequeñas.Aplique metodología SCRUM de trabajo ágil.
 
-Para probar tu configuración de docker, te recomendamos usar `docker-compose`
-localmente (en tu computadora) para ejecutar la aplicación junto
-con la base de datos.
+Para el desarrollo de la libreria y teniendo en cuenta que se debia pensar en la Interfaz de Programación de Aplicaciones API realice un Diagrama de Flujo o Pseudocódigo 💡 que me ayudo a poder ordenarme respecto a las funciones que se necesitaban crear y codear la totalidad del proyecto.
 
-Con respecto al despliegue, puedes elegir el proveedor (o proveedores)
-que prefieras junto con el mecanismo de despliegue y estrategia de alojamiento.
-Te recomendamos explorar las siguientes opciones:
+[Ir al Diagrama de Flujo o Pseudocódigo de mdLinks: ](https://drive.google.com/file/d/1AXoFnJ6bVQXE7URR6OiYP7XmP8JzJUFA/view?usp=sharing)
 
-* Si quieres explorar opciones más personalizadas y ver docker del lado del
-  servidor puedes considerar proveedores como
-  [AWS (Amazon Web Services)](https://aws.amazon.com/) o
-  [GCP (Google Cloud Platform)](https://cloud.google.com/), ambos tienen algún
-  tipo de _free tier_ así como tanto _instancias_ de _servidores virtuales_
-  (VPS) donde configurar nuestro propio Docker o servicios para desplegar
-  aplicaciones en contenedores (por ejemplo [Compute Engine](https://cloud.google.com/compute/docs/containers)
-  de GCP o [Elastic Container Service](https://aws.amazon.com/ecs/) de AWS).
+**Diagrama de Flujo Primera Parte**
+![Tablero de Github Project](img/DiagramadeFlujoPrimero.png)
 
-## 7. Pistas, tips y lecturas complementarias
+**Diagrama de Flujo Segunda Parte**
 
-### Primeros pasos
+![Tablero de Github Project](img/DiagramadeFlujoSegundo.png)
 
-> :information_source: Antes de comenzar a programar te recomendamos leer y
-> seguir con detenimiento la [**guía de _primeros pasos_**](./guides/GETTING-STARTED-MONGODB.md)
-> para ayudarte con el stack recomendado y configurar tu entorno de desarrollo.
+### 5.2. Desarrollo del Proyecto.
 
-### Otros recursos
+El desarrollo total de la libreria tomo cinco sprints y al cabo de cada uno fui tomando en cuenta el feedback recibido para hacer mejoras, a continuación pasaré a mostrar la imagen de mi tablero en Github Project donde guió el desarrollo por 5 hitos:
 
-* [Express](https://expressjs.com/)
-* [MongoDB](https://www.mongodb.com/)
-* [MongoDB Node Driver](https://www.mongodb.com/docs/drivers/node/current/)
-* [docker](https://docs.docker.com/)
-* [docker compose](https://docs.docker.com/compose/)
-* [¿Qué es Docker? | Curso de Docker | Platzi Cursos](https://youtu.be/hQgvt-s-AHQ)
-* [Postman](https://www.getpostman.com)
-* [Variable de entorno - Wikipedia](https://es.wikipedia.org/wiki/Variable_de_entorno)
-* [`process.env` - Node.js docs](https://nodejs.org/api/process.html#process_process_env)
+- Hito 1 ♟: Creación de la función mdLinks que devuelve una promesa con un arreglo de tres propiedades de los links
+
+- Hito 2 💫: Agregar el argumento validate para agregar dos propiedades sobre validaciones HTTP
+
+- Hito 3 📚: Leer directorios y no solo archivos
+
+- Hito 4 ⌨️: Crear la interfaz de línea de comando
+
+- Hito 5 ⭐️: Trabajar la recursividad de la función para leer directorios
+
+**Tablero de Github Project**
+
+![Tablero de Github Project](img/Github.png)
+
+**Cuadro de Milestones**
+
+![Cuadro de Milestones](img/Milestones.png)
+
+## 6. HERRAMIENTAS DE ELABORACIÓN
+
+👩‍🔧💻
+- JAVASCRIPT: para crear las funciones
+- Node.js: como entorno de programación de JavaScript con sus Módulos `fs` y `path`
+- Axios: Librería de Node.js para hacer las peticiones HTTP
+- NPM (Node Package Manager): para crear la interfaz de línea de comando
+- Terminal de Git Bash o PowerShell
+- Jest: para testear las funciones sincronas y asincronas
+- Github Project: para planificar el tiempo y dividir las tareas
+- Diagrama de Flujo o Pseudocódigo en Microsoft Word
