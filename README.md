@@ -35,7 +35,7 @@ En su desarrollo se utilizó **JWT** (_JSON Web Tokens_) **con una cookie** para
 las cuentas de las usuarias y lograr la persistencia de datos de inicio de sesión y
 finalmente el despligue del servidor web se hizo en **Vercel**.
 
-## 3. PROCESO DE DISEÑO Y DESARROLLO.
+## 3. Proceso de Diseño y Desarrollo
 
 ### 3.1. Planificación y Diseño. ✏️
 
@@ -67,7 +67,7 @@ El desarrollo de la API tomo diez sprints y al cabo de cada uno tuve en cuenta e
 
 ![Cuadro de Milestones](img/Milestones.png)
 
-## 4. RECURSOS EL PROYECTO
+## 4. Recursos del Proyecto
 
 ### 4.1. Conceptos Tratados 💫
 
